@@ -15,7 +15,7 @@ import Link from "next/link";
 import * as React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Breadcrumb,
@@ -28,44 +28,50 @@ import {
 import handleSaveBtn from "@/utils/handleSaveBtn";
 import { useAuth } from "@/lib/auth-context";
 
-type Ticket = {
-  id: number;
+interface Ticket {
+  id: string;
+  userId: string;
   date: string;
-  summary: string;
-  priority: string;
   text: string;
-};
+  source: string;
+  summary: string;
+  category: string;
+  priority: string;
+  team: string;
+  suggestedReply: string;
+  automationIdea: string;
+}
 
-const tickets: Ticket[] = [
-  {
-    id: 1,
-    date: "2024-06-01",
-    summary: "Order stuck in processing",
-    priority: "high",
-    text: "Full original text for ticket 1...",
-  },
-  {
-    id: 2,
-    date: "2024-15-01",
-    summary: "VPN disconnecting",
-    priority: "high",
-    text: "Full original text for ticket 2...",
-  },
-  {
-    id: 3,
-    date: "2024-15-01",
-    summary: "VPN disconnecting",
-    priority: "high",
-    text: "Full original text for ticket 2...",
-  },
-  {
-    id: 4,
-    date: "2024-15-01",
-    summary: "VPN disconnecting",
-    priority: "high",
-    text: "Full original text for ticket 2...",
-  },
-];
+// const tickets: Ticket[] = [
+//   {
+//     id: 1,
+//     date: "2024-06-01",
+//     summary: "Order stuck in processing",
+//     priority: "high",
+//     text: "Full original text for ticket 1...",
+//   },
+//   {
+//     id: 2,
+//     date: "2024-15-01",
+//     summary: "VPN disconnecting",
+//     priority: "high",
+//     text: "Full original text for ticket 2...",
+//   },
+//   {
+//     id: 3,
+//     date: "2024-15-01",
+//     summary: "VPN disconnecting",
+//     priority: "high",
+//     text: "Full original text for ticket 2...",
+//   },
+//   {
+//     id: 4,
+//     date: "2024-15-01",
+//     summary: "VPN disconnecting",
+//     priority: "high",
+//     text: "Full original text for ticket 2...",
+//   },
+// ];
 
 function TicketsPage() {
   const [text, setText] = useState("");
@@ -76,6 +82,35 @@ function TicketsPage() {
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const { user } = useAuth();
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+
+  useEffect(() => {
+    //console.log("Fetching tickets...");
+    async function fetchTickets() {
+      try {
+        const res = await fetch("/api/tickets", { method: "GET" });
+
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Failed to load tickets");
+        }
+
+        const data = await res.json();
+        //console.log("Data", data);
+        setTickets(data.tickets);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTickets();
+  }, []);
+
+  function truncate(text: string, maxLength: number): string {
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  }
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -98,7 +133,7 @@ function TicketsPage() {
 
       const data = await response.json();
       setResult(data);
-      console.log("AI Result:", data);
+      //console.log("AI Result:", data);
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
@@ -107,16 +142,17 @@ function TicketsPage() {
   };
 
   const handleSave = async () => {
-    console.log("Result:", result);
+    //console.log("Result:", result);
     if (!result) return;
     if (!user) {
       setSaveStatus("You must be logged in to save a ticket.");
       return;
     }
-    //console.log("User:", user.id);
+    //console.log("ticket:", result);
     //if (user && !user.id) {
     try {
       await handleSaveBtn({
+        type: "ticket",
         userId: String(user.id),
         date: String(result.date ?? ""),
         text,
@@ -246,7 +282,7 @@ function TicketsPage() {
                       <p>{priority}</p>
                     </div>
                     <div>
-                      <p>{summary}</p>
+                      <p>{truncate(summary, 95)}</p>
                     </div>
                     <div>
                       <p>{date}</p>

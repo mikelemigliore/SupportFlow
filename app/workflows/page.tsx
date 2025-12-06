@@ -22,6 +22,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import handleSaveBtn from "@/utils/handleSaveBtn";
+import { useAuth } from "@/lib/auth-context";
 
 const teams = [
   { value: "support-tier-1", label: "Support – Tier 1" },
@@ -172,6 +174,8 @@ function WorkflowsPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<string | null>(null);
+  const { user } = useAuth();
 
   const handleCompare = async () => {
     setLoading(true);
@@ -196,6 +200,33 @@ function WorkflowsPage() {
     }
     // console.log("Compare A:", workflowA);
     // console.log("Compare B:", workflowB);
+  };
+
+  const handleSave = async () => {
+    //console.log("Result:", result);
+    if (!result) return;
+    if (!user) {
+      setSaveStatus("You must be logged in to save a workflow.");
+      return;
+    }
+
+    try {
+      await handleSaveBtn({
+        type: "workflow",
+        team: String(result.team ?? ""),
+        bottlenecks: String(result.bottlenecks ?? ""),
+        highLevelComparison: String(result.highLevelComparison ?? ""),
+        keyDifferences: String(result.keyDifferences ?? ""),
+        recommendations: String(result.recommendations ?? ""),
+        userId: String(user.id),
+        date: String(result.date ?? ""),
+        workflowA: workflowA,
+        workflowB: workflowB,
+      });
+      setSaveStatus("Workflow saved!");
+    } catch (err: any) {
+      setSaveStatus(err?.message || "Failed to save workflow.");
+    }
   };
 
   return (
@@ -311,7 +342,7 @@ function WorkflowsPage() {
             onValueChange={
               (value) => setWorkflowB((prev) => ({ ...prev, team: value })) //Study better
             }
-            value={workflowB.team}
+            value={workflowA.team}
           >
             <SelectTrigger className="w-[10vw]">
               <SelectValue placeholder="Select a Team" />
@@ -387,7 +418,7 @@ function WorkflowsPage() {
             !workflowA.title ||
             !workflowB.title ||
             !workflowA.team ||
-            !workflowB.team ||
+            //!workflowB.team ||
             !workflowA.text ||
             !workflowB.text
           }
@@ -408,6 +439,9 @@ function WorkflowsPage() {
                 <b>Date:</b> {result.date}
               </p>
               <p>
+                <b>Team:</b> {result.team}
+              </p>
+              <p>
                 <b>High Level Comparison:</b> {result.highLevelComparison}
               </p>
               <p>
@@ -422,6 +456,8 @@ function WorkflowsPage() {
               <p>
                 <b>Automation Ideas:</b> {result.automationIdeas}
               </p>
+              <Button onClick={handleSave}>Save</Button>
+              {saveStatus && <p>{saveStatus}</p>}
             </div>
           )}
         </div>

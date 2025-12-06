@@ -1,4 +1,4 @@
-// app/api/tickets/route.ts
+// app/api/workglow/route.ts
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -44,31 +44,21 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
-    //console.log("Received ticket data:", body);
-
     const {
       date,
-      text,
-      source,
-      summary,
-      category,
-      priority,
-      team,
-      suggestedReply,
-      automationIdea,
+      overallSummary,
+      recurringIssues,
+      automationIdeas,
+      suggestedFaqs,
     } = body;
 
     // Note: we NO LONGER accept userId from the client
     if (
       !date ||
-      !text ||
-      !source ||
-      !summary ||
-      !category ||
-      !priority ||
-      !team ||
-      !suggestedReply ||
-      !automationIdea
+      !overallSummary ||
+      !recurringIssues ||
+      !automationIdeas ||
+      !suggestedFaqs
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -76,26 +66,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const ticket = await db.tickets.create({
+    const insights = await db.insights.create({
       data: {
-        userId, // taken from session, not from the body
+        userId, // from session
         date,
-        text,
-        source,
-        summary,
-        category,
-        priority,
-        team,
-        suggestedReply,
-        automationIdea,
+        overallSummary,
+        recurringIssues,
+        automationIdeas,
+        suggestedFaqs,
       },
     });
 
-    return NextResponse.json({ ticket }, { status: 201 });
+    //console.log("Workflow", workflow)
+
+    return NextResponse.json({ insights }, { status: 201 });
   } catch (err) {
-    console.error("Error creating ticket:", err);
+    console.error("Error creating insight:", err);
     return NextResponse.json(
-      { error: "Failed to create ticket" },
+      { error: "Failed to create insight" },
       { status: 500 }
     );
   }
@@ -110,22 +98,24 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const tickets = await db.tickets.findMany({
+    const insight = await db.insights.findMany({
       where: { userId },
-      orderBy: [{ date: "desc" }],
+      orderBy: { date: "desc" },
     });
 
-    return NextResponse.json({ tickets }, { status: 200 });
+    //console.log("Workflow", workflow);
+
+    return NextResponse.json({ insight }, { status: 200 });
   } catch (err) {
-    console.error("Error fetching tickets:", err);
+    console.error("Error fetching insight:", err);
     return NextResponse.json(
-      { error: "Failed to fetch tickets" },
+      { error: "Failed to fetch insight" },
       { status: 500 }
     );
   }
 }
 
-/* DELETE /api/tickets delete a ticket belonging to the logged-in user */
+// /* DELETE /api/tickets delete a ticket belonging to the logged-in user */
 export async function DELETE(req: NextRequest) {
   try {
     const userId = await getLoggedInUserId(req);
@@ -139,24 +129,27 @@ export async function DELETE(req: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { error: "Ticket id is required" },
+        { error: "Insight id is required" },
         { status: 400 }
       );
     }
 
-    const ticket = await db.tickets.findUnique({ where: { id } });
+    const insight = await db.insights.findUnique({ where: { id } });
 
-    if (!ticket || ticket.userId !== userId) {
-      return NextResponse.json({ error: "Ticket not found" }, { status: 404 });
+    if (!insight || insight.userId !== userId) {
+      return NextResponse.json(
+        { error: "Insight not found" },
+        { status: 404 }
+      );
     }
 
-    await db.tickets.delete({ where: { id } });
+    await db.insights.delete({ where: { id } });
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
-    console.error("Error deleting ticket:", err);
+    console.error("Error deleting insight:", err);
     return NextResponse.json(
-      { error: "Failed to delete ticket" },
+      { error: "Failed to delete insight" },
       { status: 500 }
     );
   }

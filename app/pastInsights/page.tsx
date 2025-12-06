@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   Breadcrumb,
@@ -7,6 +8,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const AIInsightsresults = [
   {
@@ -71,7 +82,65 @@ const AIInsightsresults = [
   },
 ];
 
+interface InsightsProps {
+  id: string;
+  date: string;
+  overallSummary: string;
+  recurringIssues: string;
+  automationIdeas: string;
+  suggestedFaqs: string;
+  createdAt: Date;
+  userId: string;
+}
+
+type SortMode = "date_desc" | "date_asc" | "priority_desc" | "priority_asc";
+
 function PastInsightsPage() {
+  //const [insights, setInsights] = useState<InsightsProps[]>();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [sortMode, setSortMode] = useState<SortMode>("date_desc");
+  const [rawInsights, setRawInsights] = useState<any[]>([]);
+
+  useEffect(() => {
+    //console.log("Fetching workflow...");
+    async function fetchInsights() {
+      try {
+        const res = await fetch("/api/insight", { method: "GET" });
+        //console.log("res", res);
+        if (!res.ok) {
+          const data = await res.json();
+          //console.log("Data", data);
+          throw new Error(data.error || "Failed to load insight");
+        }
+
+        const data = await res.json();
+        //console.log("Data", data);
+        setRawInsights(data.insight);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchInsights();
+  }, []);
+
+  const insights = useMemo(() => {
+    // 2) sort
+    return rawInsights.sort((a, b) => {
+      const timeA = new Date(a.createdAt).getTime();
+      const timeB = new Date(b.createdAt).getTime();
+
+      if (sortMode === "date_desc") return timeB - timeA;
+      if (sortMode === "date_asc") return timeA - timeB;
+
+      // tie-break by date (newest first)
+      return timeB - timeA;
+    });
+  }, [rawInsights, sortMode]);
+
   return (
     <div>
       <Breadcrumb>
@@ -90,18 +159,42 @@ function PastInsightsPage() {
         </BreadcrumbList>
       </Breadcrumb>
       <h1>Past Insights</h1>
+      <Select
+        value={sortMode}
+        onValueChange={(v) => setSortMode(v as SortMode)}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Sort" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Sort</SelectLabel>
+            <SelectItem value="date_desc">Newest first</SelectItem>
+            <SelectItem value="date_asc">Oldest first</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
       <div>
-        {!AIInsightsresults || AIInsightsresults.length === 0 ? (
+        {!insights || insights.length === 0 ? (
           <p> No past AI tickets results</p>
         ) : (
           <div className="space-y-10">
-            {AIInsightsresults.map((result) => (
+            {insights.map((result) => (
               <div className="border-5 border-blue-500" key={result.id}>
                 <p>{result.date}</p>
                 <p>{result.overallSummary}</p>
-                <p>{result.recurringIssues}</p>
-                <p>{result.automationIdeas}</p>
-                <p>{result.suggestedFaqs}</p>
+                {/* <p className="whitespace-pre-line">
+                  {" "}
+                  <b>{`Recurring Issues:\n`}</b> {result.recurringIssues}
+                </p>
+                <p className="whitespace-pre-line">
+                  {" "}
+                  <b>{`Automation Ideas:\n`}</b> {result.automationIdeas}
+                </p>
+                <p className="whitespace-pre-line">
+                  {" "}
+                  <b>{`Suggested FAQS:\n`}</b> {result.suggestedFaqs}
+                </p> */}
                 <div>
                   <Link href={`insights/${result.id}`}>View</Link>
                 </div>

@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   Breadcrumb,
@@ -7,6 +8,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { useEffect, useState, useMemo } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ComparisonResults = [
   {
@@ -112,7 +123,144 @@ const ComparisonResults = [
   },
 ];
 
+const teams = [
+  { value: "all", label: "All" },
+  { value: "support-tier-1", label: "Support – Tier 1" },
+  { value: "support-tier-2", label: "Support – Tier 2" },
+  { value: "support-escalations", label: "Support – Escalations" },
+
+  { value: "it-helpdesk", label: "IT – Helpdesk" },
+  { value: "it-infrastructure", label: "IT – Infrastructure" },
+  { value: "it-security", label: "IT – Security" },
+  { value: "it-identity-access", label: "IT – Identity & Access" },
+
+  { value: "sre", label: "SRE – Site Reliability Engineering" },
+  { value: "devops", label: "DevOps / Platform Engineering" },
+  { value: "cloud-ops", label: "Cloud Operations" },
+
+  { value: "engineering-frontend", label: "Engineering – Frontend" },
+  { value: "engineering-backend", label: "Engineering – Backend" },
+  { value: "engineering-fullstack", label: "Engineering – Fullstack" },
+  { value: "engineering-quality", label: "Engineering – QA" },
+
+  { value: "billing-team", label: "Billing & Finance" },
+  { value: "payments-team", label: "Payments" },
+
+  { value: "logistics-team", label: "Logistics & Shipping" },
+  { value: "inventory-team", label: "Inventory Management" },
+  { value: "procurement-team", label: "Procurement" },
+  { value: "supplier-relations", label: "Supplier Relations" },
+
+  { value: "hr-team", label: "Human Resources" },
+  { value: "talent-team", label: "HR – Talent & Onboarding" },
+  { value: "payroll-team", label: "HR – Payroll" },
+
+  { value: "sales-team", label: "Sales" },
+  { value: "marketing-team", label: "Marketing" },
+  { value: "customer-success", label: "Customer Success" },
+
+  { value: "legal-team", label: "Legal" },
+  { value: "compliance-team", label: "Compliance" },
+];
+
+interface WorkflowABProps {
+  id: string;
+  workflowsId: string;
+  title: string;
+  team: string;
+  workflowType?: string;
+  system?: string;
+  text: string;
+}
+
+interface WorkflowProps {
+  id: string;
+  date: string;
+  bottlenecks: string;
+  highLevelComparison: string;
+  keyDifferences: string;
+  recommendations: string;
+  createdAt: Date;
+  userId: string;
+  workflowA: WorkflowABProps[];
+  workflowB: WorkflowABProps[];
+}
+
+type SortMode = "date_desc" | "date_asc";
+type TeamFilter = "all" | (typeof teams)[number]["value"];
+
 function PastComparisonsPage() {
+  //const [workflow, setWorkflow] = useState<WorkflowProps[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [sortMode, setSortMode] = useState<SortMode>("date_desc");
+  const [teamFilter, setTeamFilter] = useState<TeamFilter>("all");
+  const [rawWorkflow, setRawWorkflow] = useState<any[]>([]);
+
+  const getTeamLabelFromValue = (value: TeamFilter) => {
+    //console.log("value", value);
+    if (value === "all") return null;
+    const match = teams.find((t) => t.value === value);
+    //console.log("match", match);
+    return match?.label;
+  };
+
+  useEffect(() => {
+    //console.log("Fetching workflow...");
+    async function fetchWorkflow() {
+      try {
+        //console.log("Fetching workflow...");
+        const res = await fetch("/api/workflow", { method: "GET" });
+        //console.log("res", res);
+        if (!res.ok) {
+          const data = await res.json();
+          //console.log("Data", data);
+          throw new Error(data.error || "Failed to load workflow");
+        }
+
+        const data = await res.json();
+        //console.log("Data", data);
+        setRawWorkflow(data.workflow);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchWorkflow();
+  }, []);
+
+  const workflow = useMemo(() => {
+    // 1) filter by source
+    //console.log("teamFilter", teamFilter);
+    const labelFilter = getTeamLabelFromValue(teamFilter);
+    //console.log("labelFilter", labelFilter);
+    const filtered = rawWorkflow.filter((wf) => {
+      if (!labelFilter) return true; // "all"
+
+      const teamA = wf?.team;
+
+      //const teamB = wf.workflowB[0]?.team;
+
+      // workflows that involve the selected team on either side
+      return teamA === labelFilter;
+    });
+    // 2) sort
+    return [...filtered].sort((a, b) => {
+      const timeA = new Date(a.createdAt).getTime();
+      const timeB = new Date(b.createdAt).getTime();
+
+      if (sortMode === "date_desc") return timeB - timeA;
+      if (sortMode === "date_asc") return timeA - timeB;
+
+      // tie-break by date (newest first)
+      return timeB - timeA;
+    });
+  }, [rawWorkflow, sortMode, teamFilter]);
+
+  //console.log("Workflow", workflow);
+
   return (
     <div>
       <Breadcrumb>
@@ -131,17 +279,47 @@ function PastComparisonsPage() {
         </BreadcrumbList>
       </Breadcrumb>
       <h1>Past Comparisons</h1>
+      <Select
+        value={sortMode}
+        onValueChange={(v) => setSortMode(v as SortMode)}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Sort" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Sort</SelectLabel>
+            <SelectItem value="date_desc">Newest first</SelectItem>
+            <SelectItem value="date_asc">Oldest first</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      <Select
+        value={teamFilter}
+        onValueChange={(v) => setTeamFilter(v as TeamFilter)}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Source" />
+        </SelectTrigger>
+        <SelectContent>
+          {teams.map((team) => (
+            <SelectItem key={team.value} value={team.value}>
+              {team.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <div>
-        {!ComparisonResults || ComparisonResults.length === 0 ? (
+        {!workflow || workflow.length === 0 ? (
           <p> No past AI tickets results</p>
         ) : (
           <div className="space-y-10">
-            {ComparisonResults.map((result) => (
+            {workflow.map((result) => (
               <div className="border-5 border-blue-500" key={result.id}>
                 <p>{result.date}</p>
-                <p>{result.workflowA.name}</p>
-                <p>{result.workflowB.name}</p>
-                <p>{result.aiAnalysis.highLevelComparison}</p>
+                <p>{result.workflowA[0]?.title}</p>
+                <p>{result.workflowB[0]?.title}</p>
+                <p>{result.highLevelComparison}</p>
                 <div>
                   <Link href={`workflows/${result.id}`}>View</Link>
                 </div>

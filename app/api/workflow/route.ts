@@ -1,4 +1,4 @@
-// app/api/tickets/route.ts
+// app/api/workglow/route.ts
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -48,27 +48,25 @@ export async function POST(req: NextRequest) {
 
     const {
       date,
-      text,
-      source,
-      summary,
-      category,
-      priority,
+      bottlenecks,
       team,
-      suggestedReply,
-      automationIdea,
+      highLevelComparison,
+      keyDifferences,
+      recommendations,
+      workflowA,
+      workflowB,
     } = body;
 
     // Note: we NO LONGER accept userId from the client
     if (
       !date ||
-      !text ||
-      !source ||
-      !summary ||
-      !category ||
-      !priority ||
-      !team ||
-      !suggestedReply ||
-      !automationIdea
+      !bottlenecks ||
+      !highLevelComparison ||
+      !keyDifferences ||
+      !recommendations ||
+      !workflowA ||
+      !workflowB ||
+      !team
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -76,26 +74,50 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const ticket = await db.tickets.create({
+    const workflow = await db.workflows.create({
       data: {
-        userId, // taken from session, not from the body
+        userId, // from session
         date,
-        text,
-        source,
-        summary,
-        category,
-        priority,
+        bottlenecks,
+        highLevelComparison,
+        keyDifferences,
+        recommendations,
         team,
-        suggestedReply,
-        automationIdea,
+
+        // nested create for the relation
+        workflowA: {
+          create: {
+            title: workflowA.title,
+            team: workflowA.team,
+            workflowType: workflowA.workflowType,
+            system: workflowA.system,
+            text: workflowA.text,
+          },
+        },
+        workflowB: {
+          create: {
+            title: workflowB.title,
+            team: workflowB.team,
+            workflowType: workflowB.workflowType,
+            system: workflowB.system,
+            text: workflowB.text,
+          },
+        },
+      },
+      // optional: if you want the children back in the response
+      include: {
+        workflowA: true,
+        workflowB: true,
       },
     });
 
-    return NextResponse.json({ ticket }, { status: 201 });
+    //console.log("Workflow", workflow)
+
+    return NextResponse.json({ workflow }, { status: 201 });
   } catch (err) {
-    console.error("Error creating ticket:", err);
+    console.error("Error creating workflow:", err);
     return NextResponse.json(
-      { error: "Failed to create ticket" },
+      { error: "Failed to create workflow" },
       { status: 500 }
     );
   }
@@ -110,22 +132,28 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const tickets = await db.tickets.findMany({
+    const workflow = await db.workflows.findMany({
       where: { userId },
-      orderBy: [{ date: "desc" }],
+      orderBy: { date: "desc" },
+      include: {
+        workflowA: true,
+        workflowB: true,
+      },
     });
 
-    return NextResponse.json({ tickets }, { status: 200 });
+    //console.log("Workflow", workflow);
+
+    return NextResponse.json({ workflow }, { status: 200 });
   } catch (err) {
-    console.error("Error fetching tickets:", err);
+    console.error("Error fetching workflow:", err);
     return NextResponse.json(
-      { error: "Failed to fetch tickets" },
+      { error: "Failed to fetch workflow" },
       { status: 500 }
     );
   }
 }
 
-/* DELETE /api/tickets delete a ticket belonging to the logged-in user */
+// /* DELETE /api/tickets delete a ticket belonging to the logged-in user */
 export async function DELETE(req: NextRequest) {
   try {
     const userId = await getLoggedInUserId(req);
@@ -139,24 +167,27 @@ export async function DELETE(req: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { error: "Ticket id is required" },
+        { error: "Workflow id is required" },
         { status: 400 }
       );
     }
 
-    const ticket = await db.tickets.findUnique({ where: { id } });
+    const workflow = await db.workflows.findUnique({ where: { id } });
 
-    if (!ticket || ticket.userId !== userId) {
-      return NextResponse.json({ error: "Ticket not found" }, { status: 404 });
+    if (!workflow || workflow.userId !== userId) {
+      return NextResponse.json(
+        { error: "Workflow not found" },
+        { status: 404 }
+      );
     }
 
-    await db.tickets.delete({ where: { id } });
+    await db.workflows.delete({ where: { id } });
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
-    console.error("Error deleting ticket:", err);
+    console.error("Error deleting workflow:", err);
     return NextResponse.json(
-      { error: "Failed to delete ticket" },
+      { error: "Failed to delete workflow" },
       { status: 500 }
     );
   }

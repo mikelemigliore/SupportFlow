@@ -62,8 +62,9 @@ function TicketDetailPage() {
         }
 
         const data = await res.json();
+        //console.log("Data ticket:", data);
         const found = data.tickets.find((t: Ticket) => t.id === id);
-        console.log("Found ticket:", found);
+        //console.log("Found ticket:", found);
 
         if (!found) {
           setError("Ticket not found");
@@ -101,17 +102,18 @@ function TicketDetailPage() {
 
     try {
       await handleDeleteTicketBtn({
+        type: "ticket",
         id: String(ticket.id),
         userId: String(ticket.userId),
-        date: String(ticket.date ?? ""),
-        text: String(ticket.text ?? ""),
-        source: String(ticket.source ?? ""),
-        summary: String(ticket.summary ?? ""),
-        category: String(ticket.category ?? ""),
-        priority: String(ticket.priority ?? ""),
-        team: String(ticket.team ?? ""),
-        suggestedReply: String(ticket.suggestedReply ?? ""),
-        automationIdea: String(ticket.automationIdea ?? ""),
+        // date: String(ticket.date ?? ""),
+        // text: String(ticket.text ?? ""),
+        // source: String(ticket.source ?? ""),
+        // summary: String(ticket.summary ?? ""),
+        // category: String(ticket.category ?? ""),
+        // priority: String(ticket.priority ?? ""),
+        // team: String(ticket.team ?? ""),
+        // suggestedReply: String(ticket.suggestedReply ?? ""),
+        // automationIdea: String(ticket.automationIdea ?? ""),
       });
       setDeleted(true);
 

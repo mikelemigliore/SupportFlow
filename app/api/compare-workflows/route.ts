@@ -2,6 +2,45 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
+const teams = [
+  { value: "support-tier-1", label: "Support – Tier 1" },
+  { value: "support-tier-2", label: "Support – Tier 2" },
+  { value: "support-escalations", label: "Support – Escalations" },
+
+  { value: "it-helpdesk", label: "IT – Helpdesk" },
+  { value: "it-infrastructure", label: "IT – Infrastructure" },
+  { value: "it-security", label: "IT – Security" },
+  { value: "it-identity-access", label: "IT – Identity & Access" },
+
+  { value: "sre", label: "SRE – Site Reliability Engineering" },
+  { value: "devops", label: "DevOps / Platform Engineering" },
+  { value: "cloud-ops", label: "Cloud Operations" },
+
+  { value: "engineering-frontend", label: "Engineering – Frontend" },
+  { value: "engineering-backend", label: "Engineering – Backend" },
+  { value: "engineering-fullstack", label: "Engineering – Fullstack" },
+  { value: "engineering-quality", label: "Engineering – QA" },
+
+  { value: "billing-team", label: "Billing & Finance" },
+  { value: "payments-team", label: "Payments" },
+
+  { value: "logistics-team", label: "Logistics & Shipping" },
+  { value: "inventory-team", label: "Inventory Management" },
+  { value: "procurement-team", label: "Procurement" },
+  { value: "supplier-relations", label: "Supplier Relations" },
+
+  { value: "hr-team", label: "Human Resources" },
+  { value: "talent-team", label: "HR – Talent & Onboarding" },
+  { value: "payroll-team", label: "HR – Payroll" },
+
+  { value: "sales-team", label: "Sales" },
+  { value: "marketing-team", label: "Marketing" },
+  { value: "customer-success", label: "Customer Success" },
+
+  { value: "legal-team", label: "Legal" },
+  { value: "compliance-team", label: "Compliance" },
+];
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -27,6 +66,16 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    const getTeamLabel = (teamValue?: string) => {
+      if (!teamValue) return "Not provided";
+      const match = teams.find(
+        (t) => t.value === teamValue || t.label === teamValue
+      );
+      return match?.label ?? teamValue;
+    };
+
+    const teamLabel = getTeamLabel(workflowA.team);
 
     // Study better, this is different from the other two, this is different because it is an object,
     // not an array like the other two, therefore we don't use .map
@@ -73,6 +122,7 @@ ${workflowBBlock}
 Return a JSON object with this exact shape:
 
 {
+  "team": ${teamLabel || "Not provided"}
   "highLevelComparison": "1–3 sentence summary of how workflow B differs from workflow A and what they are generally about.",
   "keyDifferences": [
     "Difference 1 between A and B...",
@@ -111,6 +161,7 @@ Return ONLY valid JSON. Do not include any explanations or extra text.
         minute: "2-digit",
         hour12: true,
       }),
+      team: parsed.team ?? "",
       highLevelComparison: parsed.highLevelComparison ?? "",
       keyDifferences: parsed.keyDifferences ?? [],
       bottlenecks: parsed.bottlenecks ?? [],

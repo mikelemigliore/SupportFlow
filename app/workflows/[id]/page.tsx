@@ -1,3 +1,4 @@
+"use client";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,6 +7,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import handleDeleteTicketBtn from "@/utils/handleDeleteTicketBtn";
 
 const AIComparisonResults = [
   {
@@ -55,13 +61,101 @@ const AIComparisonResults = [
         "Workflow A slows down due to manual email verification. Workflow B slows due to HR verification and multiple system dependencies.",
       recommendations:
         "Automate email verification in Workflow A; integrate HR checks into the IT portal for Workflow B.",
-      automationIdeas:
-        "Trigger automated password reset emails in Workflow A; automate MFA status detection and unlocking in Workflow B.",
     },
   },
 ];
 
+interface WorkflowABProps {
+  id: string;
+  workflowsId: string;
+  title: string;
+  team: string;
+  workflowType?: string;
+  system?: string;
+  text: string;
+}
+
+interface WorkflowProps {
+  id: string;
+  date: string;
+  team: string;
+  bottlenecks: string;
+  highLevelComparison: string;
+  keyDifferences: string;
+  recommendations: string;
+  createdAt: Date;
+  userId: string;
+  workflowA: WorkflowABProps[];
+  workflowB: WorkflowABProps[];
+}
+
 function ComparisonDetailPage() {
+  const [workflow, setWorkflow] = useState<WorkflowProps>();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const { id } = useParams<{ id: string }>();
+  const [deleted, setDeleted] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    async function fetchWorkflow() {
+      try {
+        const res = await fetch("/api/workflow", { method: "GET" });
+
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Failed to load workflow");
+        }
+
+        const data = await res.json();
+        //console.log("Data", data)
+        const found = data.workflow.find((t: WorkflowProps) => t.id === id);
+        //console.log("Found workflow:", found);
+
+        if (!found) {
+          setError("Workflow not found");
+          //console.log("Error:", error);
+        } else {
+          setWorkflow(found);
+        }
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchWorkflow();
+  }, [id]);
+
+  useEffect(() => {
+    if (deleted) {
+      const timer = setTimeout(() => {
+        router.push("/pastComparisons");
+      }, 2000); // 2 second delay
+
+      return () => clearTimeout(timer); // cleanup
+    }
+    setDeleted(false);
+  }, [deleted]);
+
+  const handleDeleteWorkflow = async () => {
+    //console.log("Result:", ticket);
+    if (!workflow) return;
+
+    try {
+      //console.log("Workflow", workflow);
+      await handleDeleteTicketBtn({
+        type: "workflow",
+        id: workflow.id, // ✅ this is what your API expects
+        userId: workflow.userId, // or remove if not needed
+      });
+      setDeleted(true);
+    } catch (err: any) {
+      console.error(err?.message || "Failed to save ticket.");
+    }
+  };
+
   return (
     <div>
       <Breadcrumb>
@@ -75,58 +169,56 @@ function ComparisonDetailPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="/pastComparisons">Past Comparisons</BreadcrumbLink>
+            <BreadcrumbLink href="/pastComparisons">
+              Past Comparisons
+            </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{`Comparison Details (ID: ${AIComparisonResults[0].id})`}</BreadcrumbPage>
+            <BreadcrumbPage>{`Comparison Details (ID: ${workflow?.id})`}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       <h1>Comparison Details</h1>
 
       <p>
-        <b>Date:</b> {AIComparisonResults[0].date}
+        <b>Date:</b> {workflow?.date}
       </p>
       <div className="flex justify-between p-4">
         <div>
           <h2>Workflow A</h2>
           <p>
-            <b>Name:</b> {AIComparisonResults[0].workflowA.name}
+            <b>Name:</b> {workflow?.workflowA[0].title}
           </p>
           <p>
-            <b>Team:</b> {AIComparisonResults[0].workflowA.team}
+            <b>Team:</b> {workflow?.team}
           </p>
           <p>
-            <b>Department:</b>{" "}
-            {AIComparisonResults[0].workflowA.optional.department || "N/A"}
+            <b>Department:</b> {workflow?.workflowA[0].workflowType || "N/A"}
           </p>
           <p>
-            <b>Platform:</b>{" "}
-            {AIComparisonResults[0].workflowA.optional.platform || "N/A"}
+            <b>Platform:</b> {workflow?.workflowA[0].system || "N/A"}
           </p>
           <p>
-            <b>Steps:</b> {AIComparisonResults[0].workflowA.steps.join(", ")}
+            <b>Steps:</b> {workflow?.workflowA[0].text}
           </p>
         </div>
         <div>
           <h2>Workflow B</h2>
           <p>
-            <b>Name:</b> {AIComparisonResults[0].workflowB.name}
+            <b>Name:</b> {workflow?.workflowB[0].title}
           </p>
           <p>
-            <b>Team:</b> {AIComparisonResults[0].workflowB.team}
+            <b>Team:</b> {workflow?.workflowB[0].team}
           </p>
           <p>
-            <b>Department:</b>{" "}
-            {AIComparisonResults[0].workflowB.optional.department || "N/A"}
+            <b>Department:</b> {workflow?.workflowB[0].workflowType || "N/A"}
           </p>
           <p>
-            <b>Platform:</b>{" "}
-            {AIComparisonResults[0].workflowB.optional.platform || "N/A"}
+            <b>Platform:</b> {workflow?.workflowB[0].system || "N/A"}
           </p>
           <p>
-            <b>Steps:</b> {AIComparisonResults[0].workflowB.steps.join(", ")}
+            <b>Steps:</b> {workflow?.workflowB[0].text}
           </p>
         </div>
       </div>
@@ -134,24 +226,19 @@ function ComparisonDetailPage() {
         <b>AI Analysis</b>
       </h1>
       <p>
-        <b>High Level Comparison:</b>{" "}
-        {AIComparisonResults[0].aiAnalysis.highLevelComparison}
+        <b>High Level Comparison:</b> {workflow?.highLevelComparison}
       </p>
       <p>
-        <b>Key Differences:</b>{" "}
-        {AIComparisonResults[0].aiAnalysis.keyDifferences}
+        <b>Key Differences:</b> {workflow?.keyDifferences}
       </p>
       <p>
-        <b>Bottlenecks:</b> {AIComparisonResults[0].aiAnalysis.bottlenecks}
+        <b>Bottlenecks:</b> {workflow?.bottlenecks}
       </p>
       <p>
-        <b>Recommendations:</b>{" "}
-        {AIComparisonResults[0].aiAnalysis.recommendations}
+        <b>Recommendations:</b> {workflow?.recommendations}
       </p>
-      <p>
-        <b>automationIdeas:</b>{" "}
-        {AIComparisonResults[0].aiAnalysis.automationIdeas}
-      </p>
+      <Button onClick={handleDeleteWorkflow}>Delete Ticket</Button>
+      {deleted && <p>Ticket deleted successfully. Redirecting...</p>}
     </div>
   );
 }

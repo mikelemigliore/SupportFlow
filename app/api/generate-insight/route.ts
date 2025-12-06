@@ -51,6 +51,7 @@ ${ticketBlock}
 Return a JSON object with this exact shape:
 
 {
+
   "overallSummary": "1–3 sentence summary of what these tickets are mostly about.",
   "recurringIssues": [
     "Issue pattern 1...",
@@ -66,6 +67,17 @@ Return a JSON object with this exact shape:
   ]
 }
 
+/*
+Important formatting rules:
+
+- "overallSummary" must be a single string (1–3 sentences).
+- "recurringIssues" must be an array of BETWEEN 1 AND 5 strings.
+- "automationIdeas" must be an array of BETWEEN 1 AND 5 strings.
+- "suggestedFaqs" must be an array of BETWEEN 1 AND 5 strings.
+- Each string in the arrays should be a single concise bullet/idea.
+- Do NOT include more than 5 items in any array.
+*/
+
 Return ONLY valid JSON. Do not include any explanations or extra text.
 `,
         },
@@ -74,6 +86,14 @@ Return ONLY valid JSON. Do not include any explanations or extra text.
 
     const raw = completion.choices[0]?.message?.content ?? "{}";
     const parsed = JSON.parse(raw);
+
+    const toBulletString = (value: unknown): string => {
+      if (Array.isArray(value)) {
+        return value.map((v, i) => `${i + 1}. ${String(v)}`).join("\n");
+      }
+      if (value == null) return "";
+      return String(value);
+    };
 
     const result = {
       date: new Date().toLocaleString("en-US", {
@@ -84,11 +104,13 @@ Return ONLY valid JSON. Do not include any explanations or extra text.
         minute: "2-digit",
         hour12: true,
       }),
-      overallSummary: parsed.overallSummary ?? "",
-      recurringIssues: parsed.recurringIssues ?? [],
-      automationIdeas: parsed.automationIdeas ?? [],
-      suggestedFaqs: parsed.suggestedFaqs ?? [],
+      overallSummary: toBulletString(parsed.overallSummary),
+      recurringIssues: toBulletString(parsed.recurringIssues),
+      automationIdeas: toBulletString(parsed.automationIdeas),
+      suggestedFaqs: toBulletString(parsed.suggestedFaqs),
     };
+
+    //console.log("result", result)
 
     return NextResponse.json(result);
   } catch (err) {

@@ -111,7 +111,7 @@ Return ONLY valid JSON. Do not include any explanations or additional text.
       automationIdea: parsed.automationIdea ?? "",
     };
 
-    console.log("Result", result);
+    //console.log("Result", result);
 
     return NextResponse.json(result);
   } catch (err) {

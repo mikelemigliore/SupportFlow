@@ -8,7 +8,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Ticket {
   id: string;
@@ -92,16 +101,26 @@ const AITicketresults = [
   },
 ];
 
+type SortMode = "date_desc" | "date_asc" | "priority_desc" | "priority_asc";
+type SourceFilter = "all" | "customer" | "employee" | "system";
+
 function PastTicketsPage() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  //const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  //const [sort, setSort] = useState("");
+  //const [sortMode, setSortMode] = useState("date_desc");
+  const [sortMode, setSortMode] = useState<SortMode>("date_desc");
+  const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
+  const [rawTickets, setRawTickets] = useState<any[]>([]);
 
   useEffect(() => {
-    console.log("Fetching tickets...");
+    //console.log("Fetching tickets...");
     async function fetchTickets() {
       try {
-        const res = await fetch("/api/tickets", { method: "GET" });
+        const res = await fetch(`/api/tickets`, {
+          method: "GET",
+        });
 
         if (!res.ok) {
           const data = await res.json();
@@ -109,8 +128,10 @@ function PastTicketsPage() {
         }
 
         const data = await res.json();
-        console.log("Data", data);
-        setTickets(data.tickets);
+        //console.log("Data", data);
+        //const sortData = handleSort(data.tickets);
+        //console.log("Data", data);
+        setRawTickets(data.tickets);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -120,6 +141,35 @@ function PastTicketsPage() {
 
     fetchTickets();
   }, []);
+
+  const priorityOrder = { high: 3, medium: 2, low: 1 } as const;
+
+  const tickets = useMemo(() => {
+    // 1) filter by source
+    const filtered = rawTickets.filter((t) => {
+      if (sourceFilter === "all") return true;
+      return t.source === sourceFilter;
+    });
+
+    // 2) sort
+    return [...filtered].sort((a, b) => {
+      const timeA = new Date(a.createdAt).getTime();
+      const timeB = new Date(b.createdAt).getTime();
+
+      if (sortMode === "date_desc") return timeB - timeA;
+      if (sortMode === "date_asc") return timeA - timeB;
+
+      const pA = priorityOrder[a.priority as keyof typeof priorityOrder];
+      const pB = priorityOrder[b.priority as keyof typeof priorityOrder];
+
+      if (pA !== pB) {
+        return sortMode === "priority_desc" ? pB - pA : pA - pB;
+      }
+
+      // tie-break by date (newest first)
+      return timeB - timeA;
+    });
+  }, [rawTickets, sortMode, sourceFilter]);
 
   return (
     <div>
@@ -139,6 +189,37 @@ function PastTicketsPage() {
         </BreadcrumbList>
       </Breadcrumb>
       <h1>Past Tickets</h1>
+      <Select
+        value={sortMode}
+        onValueChange={(v) => setSortMode(v as SortMode)}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Sort" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Sort</SelectLabel>
+            <SelectItem value="date_desc">Newest first</SelectItem>
+            <SelectItem value="date_asc">Oldest first</SelectItem>
+            <SelectItem value="priority_desc">Priority: high → low</SelectItem>
+            <SelectItem value="priority_asc">Priority: low → high</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      <Select
+        value={sourceFilter}
+        onValueChange={(v) => setSourceFilter(v as SourceFilter)}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Source" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All</SelectItem>
+          <SelectItem value="customer">Customer</SelectItem>
+          <SelectItem value="employee">Employee</SelectItem>
+          <SelectItem value="system">System</SelectItem>
+        </SelectContent>
+      </Select>
       <div>
         {!tickets || tickets.length === 0 ? (
           <p> No past AI tickets results</p>
