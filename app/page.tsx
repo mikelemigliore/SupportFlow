@@ -27,7 +27,7 @@ export default function Page() {
     }
     window.location.href = "/dashboard";
     //router.push("/dashboard");
-    console.log("Continued as guest");
+    //console.log("Continued as guest");
   };
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
@@ -35,6 +35,12 @@ export default function Page() {
         <SignInForm />
         <GoogleSignInButton />
         <GithubSignInButton />
+        <Link
+          href="/forgotpassword"
+          className=" md:text-[0.7vw] text-[4vw] font-medium text-blue-500  border-b-[0.1vw] border-transparent hover:border-blue-500"
+        >
+          Forgot password?
+        </Link>
         <Button onClick={handleContinueAsGuest}>Continue as Guest</Button>
         <h3>Already have an account?</h3>
         <Link href="/signup">Sign Up</Link>
