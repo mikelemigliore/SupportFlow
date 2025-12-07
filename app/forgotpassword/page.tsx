@@ -6,18 +6,33 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+  FieldTitle,
+} from "@/components/ui/field";
 
 function ForgotPassword() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
-  //   useEffect(() => {
-
-  //     if (sessionStatus === "authenticated") {
-  //       router.replace("/homepage");
-  //     }
-  //   }, [sessionStatus, router]);
 
   useEffect(() => {
     if (isLoading) {
@@ -70,69 +85,65 @@ function ForgotPassword() {
     }
   };
 
-  //   if (sessionStatus === "loading") {
-  //     return <h1>Loading...</h1>;
-  //   }
 
   return (
-    // sessionStatus !== "authenticated" && (
-    <div className="">
-      <div className="w-full h-screen flex justify-center items-center">
-        <div className="md:w-[19vw] md:h-[18vw] w-[82vw] h-[40vh] md:pb-[4vw] rounded-3xl">
-          <div className="flex flex-col md:mt-[0.9vw] mt-[5vw] md:ml-[2vw] ml-[4vw] space-y-[2vh]">
-            <h1 className="md:text-[1.5vw] text-[5vw]">Reset Password</h1>
-            <p className="md:text-[0.8vw] md:w-[15vw]">
-              Please enter your current email address to receive a link for
-              resetting your password.
-            </p>
-            <form onSubmit={handleSubmit}>
-              <div className="md:space-y-[1.5vw] space-y-[3vh]">
-                <div className="">
-                  <h1 className="mb-[1vh] md:text-[0.9vw]">Email</h1>
-                  <input
-                    type="text"
-                    className={`outline h-[7vh] w-[75vw] md:h-[5.5vh] md:w-[15vw] md:px-[1.5vw] px-[4vw] rounded-full md:text-[0.8vw] `}
-                    placeholder="Email..."
-                    required
-                  />
-                </div>
-                <div></div>
-                <div className="flex justify-start md:ml-[-1vw] ml-[-5vw]">
-                  <Link
-                    href="/"
-                    className="bg-transparent rounded-full md:px-[1.5vw] px-[5vw] md:py-[0.5vw] py-[2vw] md:text-[0.9vw] md:m-[0.2vw] m-[2vw] hover:bg-transparent"
-                  >
-                    Cancel
-                  </Link>
-                  <Button
-                    variant="outline"
-                    type="submit"
-                    onClick={() =>
-                      toast("Password reset link has been sent", {
-                        description:
-                          "Check your email and click the link to reset your password.",
-                        //className: "text-red-500",
-                      })
-                    }
-                    disabled={isLoading}
-                    //className="rounded-full md:px-[1.5vw] px-[5vw] md:py-[0.5vw] py-[2vw] md:text-[0.9vw] md:m-[0.2vw] m-[2vw] hover:bg-white/90 hover:text-black active:bg-white/90 active:scale-95"
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>Send</>
-                    )}
-                  </Button>
-                </div>
+    <div className="flex min-h-svh w-full">
+      <div className="relative hidden block md:block md:w-1/2 lg:w-2/3 bg-gray-200">
+        <img src="/infinity.jpg" className="w-full h-full object-cover" />
+      </div>
+
+      <div className="flex w-full md:w-1/2 lg:w-1/3 items-center justify-center p-6 md:p-10">
+        <div className="w-full max-w-sm">
+          <Card>
+            <CardHeader className="space-y-1">
+              <CardTitle className="text-2xl font-bold">
+                Reset Password
+              </CardTitle>
+              <CardDescription>
+                {" "}
+                Please enter your current email address to receive a link for
+                resetting your password.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <form onSubmit={handleSubmit}>
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="email">Email</FieldLabel>
+                    <Input type="text" placeholder="Email..." required />
+                  </Field>
+                  <Field>
+                    <div className="flex justify-between">
+                      <Link href="/">Cancel</Link>
+                      <Button
+                        variant="outline"
+                        type="submit"
+                        onClick={() =>
+                          toast("Password reset link has been sent", {
+                            description:
+                              "Check your email and click the link to reset your password.",
+                          })
+                        }
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>Send</>
+                        )}
+                      </Button>
+                    </div>
+                  </Field>
+                </FieldGroup>
                 <p className="text-red-600 md:text-[0.9vw] text-[4vw] mt-[0.5vw]">
                   {error && error}
                 </p>
-              </div>
-            </form>
-          </div>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

@@ -1,49 +1,18 @@
 "use client";
-import { Button } from "@/components/ui/button";
+
 import { SignInForm } from "@/components/signin-form";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-//import { useAuth } from "@/lib/auth-context";
-//import { usePathname } from "next/navigation";
-import {
-  GithubSignInButton,
-  GoogleSignInButton,
-} from "@/components/authButtons";
 
 export default function Page() {
-  const router = useRouter();
-  //const pathname = usePathname();
-  //const { isLoading } = useAuth();
-
-  const handleContinueAsGuest = async () => {
-    //if (isLoading) return;
-
-    const res = await fetch("/api/auth/guest", { method: "POST" });
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.log("Error");
-      return;
-    }
-    window.location.href = "/dashboard";
-    //router.push("/dashboard");
-    //console.log("Continued as guest");
-  };
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <SignInForm />
-        <GoogleSignInButton />
-        <GithubSignInButton />
-        <Link
-          href="/forgotpassword"
-          className=" md:text-[0.7vw] text-[4vw] font-medium text-blue-500  border-b-[0.1vw] border-transparent hover:border-blue-500"
-        >
-          Forgot password?
-        </Link>
-        <Button onClick={handleContinueAsGuest}>Continue as Guest</Button>
-        <h3>Already have an account?</h3>
-        <Link href="/signup">Sign Up</Link>
+    <div className="flex min-h-svh w-full">
+      <div className="relative hidden block md:block md:w-1/2 lg:w-2/3 bg-gray-200">
+        <img src="/infinity.jpg" className="w-full h-full object-cover" />
+      </div>
+
+      <div className="flex w-full md:w-1/2 lg:w-1/3 items-center justify-center p-6 md:p-10">
+        <div className="w-full max-w-sm">
+          <SignInForm />
+        </div>
       </div>
     </div>
   );
