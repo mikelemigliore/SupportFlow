@@ -173,7 +173,7 @@ function PastTicketsPage() {
 
   return (
     <div>
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
@@ -187,7 +187,7 @@ function PastTicketsPage() {
             <BreadcrumbPage>Past Tickets</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <h1>Past Tickets</h1>
       <Select
         value={sortMode}
@@ -227,6 +227,7 @@ function PastTicketsPage() {
           <div className="space-y-10">
             {tickets.map((result) => (
               <div className="border-5 border-blue-500" key={result.id}>
+                <p>{result.nameTicket}</p>
                 <p>{result.summary}</p>
                 <p>{result.category}</p>
                 <p>{result.priority}</p>

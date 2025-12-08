@@ -49,7 +49,7 @@ function normalizeTeam(value: unknown): Team {
 
 export async function POST(req: Request) {
   try {
-    const { text, source } = await req.json();
+    const { text, source, name } = await req.json();
 
     if (!text) {
       return NextResponse.json(
@@ -77,6 +77,7 @@ Ticket text:
 Analyze this ticket and return a JSON object with the following EXACT shape:
 
 {
+  "name": ${name}
   "summary": "short 1–2 sentence summary of the ticket",
   "category": "short label like 'Login', 'Billing', 'Infrastructure', 'Shipping', 'Access', etc.",
   "priority": "one of ['low', 'medium', 'high'] ONLY.",
@@ -103,6 +104,7 @@ Return ONLY valid JSON. Do not include any explanations or additional text.
         minute: "2-digit",
         hour12: true,
       }),
+      name: parsed.name ?? "",
       summary: parsed.summary ?? "",
       category: parsed.category ?? "Uncategorized",
       priority: normalizePriority(parsed.priority),

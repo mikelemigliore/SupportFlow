@@ -263,7 +263,7 @@ function PastComparisonsPage() {
 
   return (
     <div>
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
@@ -277,7 +277,7 @@ function PastComparisonsPage() {
             <BreadcrumbPage>Past Comparisons</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <h1>Past Comparisons</h1>
       <Select
         value={sortMode}
@@ -317,6 +317,7 @@ function PastComparisonsPage() {
             {workflow.map((result) => (
               <div className="border-5 border-blue-500" key={result.id}>
                 <p>{result.date}</p>
+                <p>{result.nameWorkflow}</p>
                 <p>{result.workflowA[0]?.title}</p>
                 <p>{result.workflowB[0]?.title}</p>
                 <p>{result.highLevelComparison}</p>

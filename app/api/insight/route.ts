@@ -50,6 +50,7 @@ export async function POST(req: NextRequest) {
       recurringIssues,
       automationIdeas,
       suggestedFaqs,
+      nameInsight
     } = body;
 
     // Note: we NO LONGER accept userId from the client
@@ -58,7 +59,8 @@ export async function POST(req: NextRequest) {
       !overallSummary ||
       !recurringIssues ||
       !automationIdeas ||
-      !suggestedFaqs
+      !suggestedFaqs ||
+      !nameInsight
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -70,6 +72,7 @@ export async function POST(req: NextRequest) {
       data: {
         userId, // from session
         date,
+        nameInsight,
         overallSummary,
         recurringIssues,
         automationIdeas,

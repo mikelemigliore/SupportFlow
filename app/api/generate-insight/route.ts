@@ -8,7 +8,7 @@ const openai = new OpenAI({
 
 export async function POST(req: Request) {
   try {
-    const { tickets } = await req.json();
+    const { tickets , name} = await req.json();
 
     if (!Array.isArray(tickets) || tickets.length === 0) {
       return NextResponse.json(
@@ -51,7 +51,7 @@ ${ticketBlock}
 Return a JSON object with this exact shape:
 
 {
-
+  "name": ${name}
   "overallSummary": "1–3 sentence summary of what these tickets are mostly about.",
   "recurringIssues": [
     "Issue pattern 1...",
@@ -104,6 +104,7 @@ Return ONLY valid JSON. Do not include any explanations or extra text.
         minute: "2-digit",
         hour12: true,
       }),
+      name: parsed.name ?? "",
       overallSummary: toBulletString(parsed.overallSummary),
       recurringIssues: toBulletString(parsed.recurringIssues),
       automationIdeas: toBulletString(parsed.automationIdeas),

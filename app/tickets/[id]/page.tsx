@@ -64,7 +64,7 @@ function TicketDetailPage() {
         const data = await res.json();
         //console.log("Data ticket:", data);
         const found = data.tickets.find((t: Ticket) => t.id === id);
-        //console.log("Found ticket:", found);
+        console.log("Found ticket:", found);
 
         if (!found) {
           setError("Ticket not found");
@@ -125,7 +125,7 @@ function TicketDetailPage() {
 
   return (
     <div>
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
@@ -143,11 +143,14 @@ function TicketDetailPage() {
             <BreadcrumbPage>{`Ticket Details (ID: ${id})`}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <h1>Ticket Details</h1>
 
       <p>
         <b>Date:</b> {ticket.date}
+      </p>
+      <p>
+        <b>Created By:</b> {ticket.nameTicket}
       </p>
       <p>
         <b>Category:</b> {ticket.category}

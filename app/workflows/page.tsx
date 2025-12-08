@@ -176,6 +176,7 @@ function WorkflowsPage() {
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const { user } = useAuth();
+  const [name, setName] = useState("");
 
   const handleCompare = async () => {
     setLoading(true);
@@ -183,7 +184,7 @@ function WorkflowsPage() {
       const response = await fetch("api/compare-workflows", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workflowA, workflowB }),
+        body: JSON.stringify({ workflowA, workflowB, name }),
       });
 
       if (!response.ok) {
@@ -214,6 +215,7 @@ function WorkflowsPage() {
       await handleSaveBtn({
         type: "workflow",
         team: String(result.team ?? ""),
+        nameWorkflow: String(result.name),
         bottlenecks: String(result.bottlenecks ?? ""),
         highLevelComparison: String(result.highLevelComparison ?? ""),
         keyDifferences: String(result.keyDifferences ?? ""),
@@ -231,7 +233,7 @@ function WorkflowsPage() {
 
   return (
     <div>
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
@@ -241,9 +243,18 @@ function WorkflowsPage() {
             <BreadcrumbPage>Workflows Page</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <h1>Workflows Page</h1>
-      <Link href={"/pastComparisons"}>View Past Comparisons</Link>
+      <div className="">
+        <Link href={"/pastComparisons"}>View Past Comparisons</Link>
+        <Input
+          className="w-[10vw] flex"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your Name"
+        />
+      </div>
+
       <div className="flex justify-between p-4">
         <div className="w-[40vw]">
           <h1>Workflow A</h1>
@@ -420,7 +431,8 @@ function WorkflowsPage() {
             !workflowA.team ||
             //!workflowB.team ||
             !workflowA.text ||
-            !workflowB.text
+            !workflowB.text ||
+            !name
           }
           onClick={handleCompare}
         >
@@ -437,6 +449,9 @@ function WorkflowsPage() {
               <h2 className="font-semibold">AI Analysis</h2>
               <p>
                 <b>Date:</b> {result.date}
+              </p>
+              <p>
+                <b>Created By:</b> {result.name}
               </p>
               <p>
                 <b>Team:</b> {result.team}

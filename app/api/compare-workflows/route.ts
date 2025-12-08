@@ -55,9 +55,10 @@ type WorkflowProps = {
 
 export async function POST(req: Request) {
   try {
-    const { workflowA, workflowB } = (await req.json()) as {
+    const { workflowA, workflowB , name} = (await req.json()) as {
       workflowA: WorkflowProps;
       workflowB: WorkflowProps;
+      name: string;
     };
 
     if (!workflowA || !workflowB) {
@@ -122,6 +123,7 @@ ${workflowBBlock}
 Return a JSON object with this exact shape:
 
 {
+  "name": ${name}
   "team": ${teamLabel || "Not provided"}
   "highLevelComparison": "1–3 sentence summary of how workflow B differs from workflow A and what they are generally about.",
   "keyDifferences": [
@@ -161,6 +163,7 @@ Return ONLY valid JSON. Do not include any explanations or extra text.
         minute: "2-digit",
         hour12: true,
       }),
+      name: parsed.name ?? "",
       team: parsed.team ?? "",
       highLevelComparison: parsed.highLevelComparison ?? "",
       keyDifferences: parsed.keyDifferences ?? [],

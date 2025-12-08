@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import handleSaveBtn from "@/utils/handleSaveBtn";
 import { useAuth } from "@/lib/auth-context";
+import { Input } from "@/components/ui/input";
 
 interface Ticket {
   id: string;
@@ -75,6 +76,7 @@ interface Ticket {
 
 function TicketsPage() {
   const [text, setText] = useState("");
+  const [name, setName] = useState("");
   const [source, setSource] = useState("");
   //   const [priority, setPriority] = useState("");
   const [loading, setLoading] = useState(false);
@@ -114,7 +116,7 @@ function TicketsPage() {
 
   const handleAnalyze = async () => {
     setLoading(true);
-    if (!text || !source) {
+    if (!text || !source || !name) {
       alert("Please fill all fields");
       return;
     }
@@ -123,7 +125,7 @@ function TicketsPage() {
       const response = await fetch("/api/analyze-ticket", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, source }),
+        body: JSON.stringify({ text, source, name }),
       });
 
       if (!response.ok) {
@@ -155,6 +157,7 @@ function TicketsPage() {
         type: "ticket",
         userId: String(user.id),
         date: String(result.date ?? ""),
+        nameTicket: String(result.name),
         text,
         source,
         summary: String(result.summary ?? ""),
@@ -173,7 +176,7 @@ function TicketsPage() {
 
   return (
     <div>
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
@@ -183,7 +186,7 @@ function TicketsPage() {
             <BreadcrumbPage>Ticket Page</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <h1>Tickets Page</h1>
       <Link href="/pastTickets">Go to Past Tickets</Link>
       <div>
@@ -201,6 +204,12 @@ function TicketsPage() {
             </SelectGroup>
           </SelectContent>
         </Select>
+        <Input
+          className="w-[10vw]"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your Name"
+        />
         <div className="w-[30vw]">
           <Textarea
             value={text}
@@ -211,7 +220,7 @@ function TicketsPage() {
         <Button
           className="cursor-pointer"
           onClick={handleAnalyze}
-          disabled={loading || !text || !source}
+          disabled={loading || !text || !source || !name}
         >
           AI Analyze Ticket
         </Button>
@@ -226,6 +235,9 @@ function TicketsPage() {
               <h2 className="font-semibold">AI Analysis</h2>
               <p>
                 <b>Date:</b> {result.date}
+              </p>
+              <p>
+                <b>Created By:</b> {result.name}
               </p>
               <p>
                 <b>Summary:</b> {result.summary}

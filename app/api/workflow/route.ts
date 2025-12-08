@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
       recommendations,
       workflowA,
       workflowB,
+      nameWorkflow,
     } = body;
 
     // Note: we NO LONGER accept userId from the client
@@ -66,7 +67,8 @@ export async function POST(req: NextRequest) {
       !recommendations ||
       !workflowA ||
       !workflowB ||
-      !team
+      !team ||
+      !nameWorkflow
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -83,6 +85,7 @@ export async function POST(req: NextRequest) {
         keyDifferences,
         recommendations,
         team,
+        nameWorkflow,
 
         // nested create for the relation
         workflowA: {
@@ -111,7 +114,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    //console.log("Workflow", workflow)
+    console.log("Workflow", workflow)
 
     return NextResponse.json({ workflow }, { status: 201 });
   } catch (err) {

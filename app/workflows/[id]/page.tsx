@@ -77,6 +77,7 @@ interface WorkflowABProps {
 
 interface WorkflowProps {
   id: string;
+  nameWorkflow: string;
   date: string;
   team: string;
   bottlenecks: string;
@@ -158,7 +159,7 @@ function ComparisonDetailPage() {
 
   return (
     <div>
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
@@ -178,11 +179,14 @@ function ComparisonDetailPage() {
             <BreadcrumbPage>{`Comparison Details (ID: ${workflow?.id})`}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <h1>Comparison Details</h1>
 
       <p>
         <b>Date:</b> {workflow?.date}
+      </p>
+      <p>
+        <b>Created By:</b> {workflow?.nameWorkflow}
       </p>
       <div className="flex justify-between p-4">
         <div>

@@ -31,6 +31,7 @@ const AIInsightsresults = [
 interface Insight {
   id: string;
   userId: string;
+  nameInsight:string;
   date: string;
   overallSummary: string;
   recurringIssues: string;
@@ -116,7 +117,7 @@ function InsightDetailPage() {
 
   return (
     <div>
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
@@ -134,11 +135,14 @@ function InsightDetailPage() {
             <BreadcrumbPage>Insight Details</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <h1>Insight Details</h1>
 
       <p>
         <b>Date:</b> {insight?.date}
+      </p>
+      <p>
+        <b>Created By:</b> {insight?.nameInsight}
       </p>
       <p className="whitespace-pre-line">
         {" "}

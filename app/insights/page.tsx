@@ -148,6 +148,7 @@ function InsightsPage() {
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const { user } = useAuth();
   const [tickets, setTickets] = useState<TicketForInsight[]>([]);
+  const [name, setName] = useState("");
 
   useEffect(() => {
     //console.log("Fetching tickets...");
@@ -182,7 +183,7 @@ function InsightsPage() {
       const response = await fetch("/api/generate-insight", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tickets: selectedTicketData }),
+        body: JSON.stringify({ tickets: selectedTicketData, name }),
       });
 
       if (!response.ok) {
@@ -210,7 +211,7 @@ function InsightsPage() {
       const response = await fetch("/api/generate-insight", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tickets: selectedTicketData }),
+        body: JSON.stringify({ tickets: selectedTicketData, name }),
       });
 
       if (!response.ok) {
@@ -270,6 +271,7 @@ function InsightsPage() {
     try {
       await handleSaveBtn({
         type: "insight",
+        nameInsight: String(result.name),
         automationIdeas: String(result.automationIdeas ?? ""),
         overallSummary: String(result.overallSummary ?? ""),
         recurringIssues: String(result.recurringIssues ?? ""),
@@ -285,7 +287,7 @@ function InsightsPage() {
 
   return (
     <div>
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
@@ -295,9 +297,15 @@ function InsightsPage() {
             <BreadcrumbPage>Insight Page</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <h1>Insight Page</h1>
       <Link href="/pastInsights">Go to Past Insights</Link>
+      <Input
+        className="w-[10vw] flex"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Your Name"
+      />
       <div>
         <ScrollArea className="h-[40vh] w-full rounded-md border">
           <div className="p-4">
@@ -426,6 +434,9 @@ function InsightsPage() {
               <h2 className="font-semibold">AI Analysis</h2>
               <p>
                 <b>Date:</b> {result.date}
+              </p>
+              <p>
+                <b>Created By:</b> {result.name}
               </p>
               <p>
                 <b>Overall Summary:</b> {result.overallSummary}

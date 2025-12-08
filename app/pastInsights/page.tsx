@@ -143,7 +143,7 @@ function PastInsightsPage() {
 
   return (
     <div>
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
@@ -157,7 +157,7 @@ function PastInsightsPage() {
             <BreadcrumbPage>Past Insights</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <h1>Past Insights</h1>
       <Select
         value={sortMode}
@@ -182,6 +182,7 @@ function PastInsightsPage() {
             {insights.map((result) => (
               <div className="border-5 border-blue-500" key={result.id}>
                 <p>{result.date}</p>
+                 <p>{result.nameInsight}</p>
                 <p>{result.overallSummary}</p>
                 {/* <p className="whitespace-pre-line">
                   {" "}

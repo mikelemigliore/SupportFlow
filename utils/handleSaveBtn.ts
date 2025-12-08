@@ -11,6 +11,9 @@ type WorkflowProps = {
 async function handleSaveBtn(Data: {
   type: string;
   userId: string;
+  nameTicket?: string;
+  nameWorkflow?: string;
+  nameInsight?: string;
   bottlenecks?: string;
   highLevelComparison?: string;
   keyDifferences?: string;

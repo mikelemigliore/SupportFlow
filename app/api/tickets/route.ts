@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
       team,
       suggestedReply,
       automationIdea,
+      nameTicket,
     } = body;
 
     // Note: we NO LONGER accept userId from the client
@@ -68,7 +69,8 @@ export async function POST(req: NextRequest) {
       !priority ||
       !team ||
       !suggestedReply ||
-      !automationIdea
+      !automationIdea ||
+      !nameTicket 
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -88,6 +90,7 @@ export async function POST(req: NextRequest) {
         team,
         suggestedReply,
         automationIdea,
+        nameTicket,
       },
     });
 

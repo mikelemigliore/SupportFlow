@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { Toaster } from "@/components/ui/sonner";
+import NavBar from "@/components/navBar";
+import { useAuth } from "@/lib/auth-context";
+import AuthNavbarWrapper from "@/components/authNavbarWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,12 +27,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  //const { user} = useAuth();
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <AuthNavbarWrapper />
+          {children}
+        </AuthProvider>
         <Toaster />
       </body>
     </html>
