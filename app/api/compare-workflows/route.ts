@@ -125,7 +125,7 @@ Return a JSON object with this exact shape:
 {
   "name": ${name}
   "team": ${teamLabel || "Not provided"}
-  "highLevelComparison": "1–3 sentence summary of how workflow B differs from workflow A and what they are generally about.",
+  "summary": "1–3 sentence summary of how workflow B differs from workflow A and what they are generally about.",
   "keyDifferences": [
     "Difference 1 between A and B...",
     "Difference 2...",
@@ -165,7 +165,7 @@ Return ONLY valid JSON. Do not include any explanations or extra text.
       }),
       name: parsed.name ?? "",
       team: parsed.team ?? "",
-      highLevelComparison: parsed.highLevelComparison ?? "",
+      summary: parsed.summary ?? "",
       keyDifferences: parsed.keyDifferences ?? [],
       bottlenecks: parsed.bottlenecks ?? [],
       recommendations: parsed.recommendations ?? [],

@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
     //console.log("Received ticket data:", body);
 
     const {
+      type,
       date,
       text,
       source,
@@ -56,11 +57,12 @@ export async function POST(req: NextRequest) {
       team,
       suggestedReply,
       automationIdea,
-      nameTicket,
+      name,
     } = body;
 
     // Note: we NO LONGER accept userId from the client
     if (
+      !type ||
       !date ||
       !text ||
       !source ||
@@ -70,7 +72,7 @@ export async function POST(req: NextRequest) {
       !team ||
       !suggestedReply ||
       !automationIdea ||
-      !nameTicket 
+      !name
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -80,6 +82,7 @@ export async function POST(req: NextRequest) {
 
     const ticket = await db.tickets.create({
       data: {
+        type,
         userId, // taken from session, not from the body
         date,
         text,
@@ -90,7 +93,7 @@ export async function POST(req: NextRequest) {
         team,
         suggestedReply,
         automationIdea,
-        nameTicket,
+        name,
       },
     });
 

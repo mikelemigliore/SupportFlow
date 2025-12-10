@@ -52,7 +52,7 @@ Return a JSON object with this exact shape:
 
 {
   "name": ${name}
-  "overallSummary": "1–3 sentence summary of what these tickets are mostly about.",
+  "summary": "1–3 sentence summary of what these tickets are mostly about.",
   "recurringIssues": [
     "Issue pattern 1...",
     "Issue pattern 2..."
@@ -105,7 +105,7 @@ Return ONLY valid JSON. Do not include any explanations or extra text.
         hour12: true,
       }),
       name: parsed.name ?? "",
-      overallSummary: toBulletString(parsed.overallSummary),
+      summary: toBulletString(parsed.summary),
       recurringIssues: toBulletString(parsed.recurringIssues),
       automationIdeas: toBulletString(parsed.automationIdeas),
       suggestedFaqs: toBulletString(parsed.suggestedFaqs),

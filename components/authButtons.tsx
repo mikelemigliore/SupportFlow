@@ -5,6 +5,8 @@
 // import githubLogo from "@/public/github.png";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { FaGoogle } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 
 export function GoogleSignInButton() {
   const handleClick = () => {
@@ -13,9 +15,15 @@ export function GoogleSignInButton() {
   };
 
   return (
-    <Button variant="outline" onClick={handleClick} className="w-full">
-      {/* <Image src={googleLogo} alt="Google Logo" width={20} height={20} /> */}
-      <span className="ml-4">Continue with Google</span>
+    <Button
+      variant="outline"
+      onClick={handleClick}
+      className="w-full cursor-pointer"
+    >
+      <div className="flex space-x-4">
+        <span className="ml-4">Continue with Google</span>
+        <FaGoogle className="mt-0.5" />
+      </div>
     </Button>
   );
 }
@@ -26,9 +34,15 @@ export function GithubSignInButton() {
   };
 
   return (
-    <Button variant="outline" onClick={handleClick} className="w-full">
-      {/* <Image src={githubLogo} alt="Github Logo" width={20} height={20} /> */}
-      <span className="ml-4">Continue with Github</span>
+    <Button
+      variant="outline"
+      onClick={handleClick}
+      className="w-full cursor-pointer"
+    >
+      <div className="flex space-x-4">
+        <span className="ml-4">Continue with Github</span>
+        <FaGithub className="mt-0.5" />
+      </div>
     </Button>
   );
 }

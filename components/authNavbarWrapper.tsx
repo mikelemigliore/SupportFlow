@@ -1,31 +1,25 @@
 // components/AuthNavbarWrapper.tsx
 "use client";
 
-import { useAuth } from "@/lib/auth-context";
-import NavBar from "./navBar";
 import { usePathname } from "next/navigation";
-
-const PUBLIC_ROUTES = ["/", "/login", "/register"]; // tweak for your app
+import NavBar from "./navBar";
 
 export default function AuthNavbarWrapper() {
-  const { user, isLoading } = useAuth();
   const pathname = usePathname();
 
-  if (PUBLIC_ROUTES.includes(pathname)) return null;
+  const isDashboard = pathname === "/dashboard";
 
-  if (isLoading) return null;
+  const hideOnRoutes = ["/", "/signup", "/forgotpassword"];
+  const shouldHide =
+    hideOnRoutes.includes(pathname) || pathname.startsWith("/resetpassword");
 
-  if (!user) return null;
+  if (shouldHide) {
+    return null; // no navbar at all
+  }
 
   return (
-    <div>
-      {pathname === "/dashboard" ? (
-        <div className="ml-64">
-          <NavBar />{" "}
-        </div>
-      ) : (
-        <NavBar />
-      )}
+    <div className={isDashboard ? "ml-64" : ""}>
+      <NavBar />
     </div>
   );
 }

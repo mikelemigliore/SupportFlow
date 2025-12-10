@@ -12,22 +12,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
-import * as React from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import handleSaveBtn from "@/utils/handleSaveBtn";
 import { useAuth } from "@/lib/auth-context";
 import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { IconFolderCode } from "@tabler/icons-react";
+import { toast } from "sonner";
 
 interface Ticket {
   id: string;
@@ -42,37 +49,6 @@ interface Ticket {
   suggestedReply: string;
   automationIdea: string;
 }
-
-// const tickets: Ticket[] = [
-//   {
-//     id: 1,
-//     date: "2024-06-01",
-//     summary: "Order stuck in processing",
-//     priority: "high",
-//     text: "Full original text for ticket 1...",
-//   },
-//   {
-//     id: 2,
-//     date: "2024-15-01",
-//     summary: "VPN disconnecting",
-//     priority: "high",
-//     text: "Full original text for ticket 2...",
-//   },
-//   {
-//     id: 3,
-//     date: "2024-15-01",
-//     summary: "VPN disconnecting",
-//     priority: "high",
-//     text: "Full original text for ticket 2...",
-//   },
-//   {
-//     id: 4,
-//     date: "2024-15-01",
-//     summary: "VPN disconnecting",
-//     priority: "high",
-//     text: "Full original text for ticket 2...",
-//   },
-// ];
 
 function TicketsPage() {
   const [text, setText] = useState("");
@@ -154,10 +130,10 @@ function TicketsPage() {
     //if (user && !user.id) {
     try {
       await handleSaveBtn({
-        type: "ticket",
+        type: "Ticket",
         userId: String(user.id),
         date: String(result.date ?? ""),
-        nameTicket: String(result.name),
+        name: String(result.name),
         text,
         source,
         summary: String(result.summary ?? ""),
@@ -167,6 +143,9 @@ function TicketsPage() {
         suggestedReply: String(result.suggestedReply ?? ""),
         automationIdea: String(result.automationIdea ?? ""),
       });
+
+      toast("Ticket Saved Successfully");
+
       setSaveStatus("Ticket saved!");
     } catch (err: any) {
       setSaveStatus(err?.message || "Failed to save ticket.");
@@ -175,141 +154,170 @@ function TicketsPage() {
   };
 
   return (
-    <div>
-      {/* <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Ticket Page</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb> */}
-      <h1>Tickets Page</h1>
-      <Link href="/pastTickets">Go to Past Tickets</Link>
-      <div>
-        <h1>New Ticket Analisys</h1>
-        <Select onValueChange={setSource}>
-          <SelectTrigger className="w-[10vw]">
-            <SelectValue placeholder="Select a source" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Source</SelectLabel>
-              <SelectItem value="customer">Customer</SelectItem>
-              <SelectItem value="employee">Employee</SelectItem>
-              <SelectItem value="system">System</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Input
-          className="w-[10vw]"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your Name"
-        />
-        <div className="w-[30vw]">
-          <Textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Enter ticket main text here..."
-          />
-        </div>
-        <Button
-          className="cursor-pointer"
-          onClick={handleAnalyze}
-          disabled={loading || !text || !source || !name}
-        >
-          AI Analyze Ticket
+    <div className="w-full relative flex justify-center space-x-35 h-[90vh] items-center">
+      <div className="absolute top-4 left-4">
+        <Button size="sm" asChild>
+          <Link href="/pastTickets">View Past Tickets</Link>
         </Button>
       </div>
-      <div>
-        <h1>Result</h1>
-        <div>
-          {error && <p className="text-red-500 mb-4">{error}</p>}
-          {loading && <Spinner className="size-8" />}
-          {result && (
-            <div className="border rounded p-4 space-y-2">
-              <h2 className="font-semibold">AI Analysis</h2>
-              <p>
-                <b>Date:</b> {result.date}
-              </p>
-              <p>
-                <b>Created By:</b> {result.name}
-              </p>
-              <p>
-                <b>Summary:</b> {result.summary}
-              </p>
-              <p>
-                <b>Category:</b> {result.category}
-              </p>
-              <p>
-                <b>Priority:</b> {result.priority}
-              </p>
-              <p>
-                <b>Team:</b> {result.team}
-              </p>
-              <p>
-                <b>Suggested reply:</b> {result.suggestedReply}
-              </p>
-              <p>
-                <b>Automation idea:</b> {result.automationIdea}
-              </p>
-              <Button onClick={handleSave}>Save</Button>
-              {saveStatus && <p>{saveStatus}</p>}
+      <Card className="w-full max-w-lg h-[72vh]">
+        <CardHeader>
+          <CardTitle>New AI Ticket Analisys</CardTitle>
+          <CardDescription>
+            Enter the info below and let AI analyze and organize it for you.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-6">
+            <div className="grid gap-2">
+              <Label htmlFor="createdBy">Created By</Label>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your Name"
+              />
             </div>
-          )}
-        </div>
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="soucre">Source</Label>
+              </div>
+              <Select onValueChange={setSource}>
+                <SelectTrigger className="w-[10vw]">
+                  <SelectValue placeholder="Select a source" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Source</SelectLabel>
+                    <SelectItem value="customer">Customer</SelectItem>
+                    <SelectItem value="employee">Employee</SelectItem>
+                    <SelectItem value="system">System</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="text">Ticket Info</Label>
+              </div>
+              <Textarea
+                className="w-[24vw] h-[32vh] resize-none"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Enter ticket main text here..."
+              />
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="flex-col gap-2 ">
+          <Button
+            className="cursor-pointer w-full"
+            onClick={handleAnalyze}
+            disabled={loading || !text || !source || !name}
+          >
+            AI Analyze Ticket
+          </Button>
+        </CardFooter>
+      </Card>
+      <div className="w-20 h-6 flex items-center justify-center">
+        {loading ? (
+          <div className="flex space-x-12">
+            <div className="loader"></div>
+            <div className="loader"></div>
+          </div>
+        ) : null}
       </div>
-      <div>
-        <h1>Recent</h1>
-        <ScrollArea className="h-[20vh] w-[45vw] rounded-md border">
-          <div className="p-4">
-            {/* <h4 className="mb-4 text-sm leading-none font-medium">Recent</h4> */}
-            <div className="grid grid-cols-4 w-full items-center gap-4">
-              <div>
-                <h5 className="mb-4 text-sm leading-none font-medium">
-                  Priority
-                </h5>
+      <Card className="w-full max-w-lg h-[74vh]">
+        <CardHeader>
+          <CardTitle>AI Analysis</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className={`max-h-[27vw] ${result ? "overflow-y-auto" : ""}`}>
+            {error && <p className="text-red-500 mb-4">{error}</p>}
+            {result ? (
+              <div className="flex flex-col gap-6">
+                <div className="grid gap-2">
+                  <Label htmlFor="date">
+                    <b>Date</b>
+                  </Label>
+                  {result.date}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="name">
+                    <b>Created By</b>
+                  </Label>
+                  {result.name}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="summary">
+                    <b>Summary</b>
+                  </Label>
+                  {result.summary}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="category">
+                    <b>Category</b>
+                  </Label>
+                  {result.category}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="priority">
+                    <b>Priority</b>
+                  </Label>
+                  {result.priority}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="team">
+                    <b>Team</b>
+                  </Label>
+                  {result.team}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="suggestedReply">
+                    <b>Suggested Reply</b>
+                  </Label>
+                  {result.suggestedReply}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="automationIdea">
+                    <b>Automation Idea</b>
+                  </Label>
+                  {result.automationIdea}
+                </div>
               </div>
-              <div>
-                <h5 className="mb-4 text-sm leading-none font-medium">
-                  Summary
-                </h5>
-              </div>
-              <div>
-                <h5 className="mb-4 text-sm leading-none font-medium">Date</h5>
-              </div>
-            </div>
-
-            {!tickets || tickets.length === 0 ? (
-              <p>No Recent Tickets</p>
             ) : (
-              tickets.map(({ id, priority, date, summary }) => (
-                <React.Fragment key={id}>
-                  <div className="grid grid-cols-4 w-full items-center gap-4">
-                    <div>
-                      <p>{priority}</p>
-                    </div>
-                    <div>
-                      <p>{truncate(summary, 95)}</p>
-                    </div>
-                    <div>
-                      <p>{date}</p>
-                    </div>
-                    <div>
-                      <Link href={`tickets/${id}`}>View</Link>
-                    </div>
+              <div className="w-full h-[63vh] bg-gray-100 rounded-xl">
+                {loading ? (
+                  <div className="flex items-center justify-center h-full">
+                    <Spinner className="size-25" />
                   </div>
-                  <Separator className="my-2" />
-                </React.Fragment>
-              ))
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <Empty>
+                      <EmptyHeader>
+                        <EmptyMedia variant="icon">
+                          <IconFolderCode />
+                        </EmptyMedia>
+                        <EmptyTitle>No Result Yet</EmptyTitle>
+                        <EmptyDescription>
+                          You haven&apos;t created any ticket yet. Get started
+                          by creating your ticket to the left.
+                        </EmptyDescription>
+                      </EmptyHeader>
+                    </Empty>
+                  </div>
+                )}
+              </div>
             )}
           </div>
-        </ScrollArea>
-      </div>
+          <div className="flex-col gap-2 pt-5">
+            {result && (
+              <Button className="cursor-pointer w-full" onClick={handleSave}>
+                Save
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

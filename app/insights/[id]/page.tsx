@@ -1,37 +1,25 @@
 "use client";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+
 import handleDeleteTicketBtn from "@/utils/handleDeleteTicketBtn";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-
-const AIInsightsresults = [
-  {
-    id: 1,
-    date: "11/29/2025, 03:58 PM",
-    overallSummary:
-      "The tickets mainly report issues related to delayed order processing and frequent VPN disconnections experienced by employees.",
-    recurringIssues:
-      "Delayed order processing leading to customer dissatisfaction. Frequent VPN disconnections affecting employee productivity.",
-    automationIdeas:
-      "Implement an automated order status update system to inform customers of their order progress. Create a monitoring tool to proactively identify and resolve VPN connectivity issues.",
-    suggestedFaqs:
-      "How to check the status of your order? What to do if your VPN keeps disconnecting?",
-  },
-];
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 
 interface Insight {
   id: string;
   userId: string;
-  nameInsight:string;
+  name: string;
   date: string;
   overallSummary: string;
   recurringIssues: string;
@@ -58,9 +46,7 @@ function InsightDetailPage() {
         }
 
         const data = await res.json();
-        //console.log("Data insight:", data);
         const found = data.insight.find((t: Insight) => t.id === id);
-        //console.log("Found insight:", found);
 
         if (!found) {
           setError("Insight not found");
@@ -97,17 +83,9 @@ function InsightDetailPage() {
         type: "insight",
         id: String(insight.id),
         userId: String(insight.userId),
-        // date: String(ticket.date ?? ""),
-        // text: String(ticket.text ?? ""),
-        // source: String(ticket.source ?? ""),
-        // summary: String(ticket.summary ?? ""),
-        // category: String(ticket.category ?? ""),
-        // priority: String(ticket.priority ?? ""),
-        // team: String(ticket.team ?? ""),
-        // suggestedReply: String(ticket.suggestedReply ?? ""),
-        // automationIdea: String(ticket.automationIdea ?? ""),
       });
       setDeleted(true);
+      toast("Insight Deleted Successfully");
 
       // router.push("/pastTickets");
     } catch (err: any) {
@@ -116,48 +94,68 @@ function InsightDetailPage() {
   };
 
   return (
-    <div>
-      {/* <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/insights">Insights</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/pastInsights">Past Insights</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Insight Details</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb> */}
-      <h1>Insight Details</h1>
+    <div className="flex justify-center items-center py-20">
+      <Card className=" relative w-[60vw] h-[62vh] overflow-y-auto">
+        {deleted ? (
+          ""
+        ) : (
+          <CardHeader>
+            <CardTitle>{deleted ? "" : `Insight: ${insight?.id}`}</CardTitle>
+            <CardDescription>
+              Below you will see all the info available about this insight.
+            </CardDescription>
+          </CardHeader>
+        )}
 
-      <p>
-        <b>Date:</b> {insight?.date}
-      </p>
-      <p>
-        <b>Created By:</b> {insight?.nameInsight}
-      </p>
-      <p className="whitespace-pre-line">
-        {" "}
-        <b>{`Recurring Issues:\n`}</b> {insight?.recurringIssues}
-      </p>
-      <p className="whitespace-pre-line">
-        {" "}
-        <b>{`Automation Ideas:\n`}</b> {insight?.automationIdeas}
-      </p>
-      <p className="whitespace-pre-line">
-        {" "}
-        <b>{`Suggested FAQS:\n`}</b> {insight?.suggestedFaqs}
-      </p>
-      <Button onClick={handleDeleteTicket}>Delete insight</Button>
-      {deleted && <p>Insight deleted successfully. Redirecting...</p>}
+        <CardContent>
+          {deleted ? (
+            <div className="flex items-center justify-center my-[20vh]">
+              <Spinner className="size-25" />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="gap-3">
+                <Label htmlFor="date">
+                  <b>Date</b>
+                </Label>
+                <p>{insight?.date}</p>
+              </div>
+              <div className="gap-3">
+                <Label htmlFor="name">
+                  <b>Name</b>
+                </Label>
+                <p>{insight?.name}</p>
+              </div>
+              <div className=" gap-3">
+                <Label htmlFor="recurringIssues">
+                  <b>Recurring Issues</b>
+                </Label>
+                <p>{insight?.recurringIssues}</p>
+              </div>
+              <div className=" gap-3">
+                <Label htmlFor="automationIdeas">
+                  <b>Automation Ideas</b>
+                </Label>
+                <p>{insight?.automationIdeas}</p>
+              </div>
+              <div className=" gap-3">
+                <Label htmlFor="suggestedFaqs">
+                  <b>Suggested FAQS</b>
+                </Label>
+                <p>{insight?.suggestedFaqs}</p>
+              </div>
+              <div className="absolute top-7 right-10">
+                <Button
+                  className="cursor-pointer w-[7vw]"
+                  onClick={handleDeleteTicket}
+                >
+                  Delete Ticket
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

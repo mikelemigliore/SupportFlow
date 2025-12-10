@@ -54,100 +54,20 @@ type ActivityData = {
   insights: Insight[];
 };
 
-export function ChartAreaInteractive({ activity }: { activity: ActivityData }) {
+type ChartAreaInteractiveProps = {
+  filteredData: ChartData[];
+  timeRange: string;
+  setTimeRange: (value: string) => void;
+};
+
+//{ activity }: { activity: ActivityData }
+export function ChartAreaInteractive({
+  filteredData,
+  timeRange,
+  setTimeRange,
+}: ChartAreaInteractiveProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [timeRange, setTimeRange] = React.useState("7d");
-  const [lenghtTickets, setLenghtTickets] = useState<number>(0);
-  const [lenghtWorkflows, setLenghtWorkflows] = useState<number>(0);
-  const [lenghtInsights, setLenghtInsights] = useState<number>(0);
-//   const [activity, setActivity] = useState<ActivityData>({
-//     tickets: [],
-//     workflows: [],
-//     insights: [],
-//   });
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-
-//   useEffect(() => {
-//     async function fetchActivity() {
-//       try {
-//         const [resTickets, resWorkflows, resInsight] = await Promise.all([
-//           fetch("/api/tickets"),
-//           fetch("/api/workflow"),
-//           fetch("/api/insight"),
-//         ]);
-
-//         const dataTickets = await resTickets.json();
-//         const dataWorkflows = await resWorkflows.json();
-//         const dataInsights = await resInsight.json();
-
-//         setActivity({
-//           tickets: (dataTickets.tickets ?? []).map((t: any) => ({
-//             createdAt: t.createdAt,
-//           })),
-//           workflows: (dataWorkflows.workflow ?? []).map((w: any) => ({
-//             createdAt: w.createdAt,
-//           })),
-//           insights: (dataInsights.insight ?? []).map((i: any) => ({
-//             createdAt: i.createdAt,
-//           })),
-//         });
-//       } catch (err: any) {
-//         setError(err.message);
-//       } finally {
-//         setLoading(false);
-//       }
-//     }
-
-//     fetchActivity();
-//   }, []);
-
-  useEffect(() => {
-    buildChartData(activity);
-    //console.log("Activity", activity);
-  }, [activity]);
-
-  function normalizeTimestampToDay(timestamp: string) {
-    //console.log("timestamp", timestamp);
-    return new Date(timestamp).toISOString().split("T")[0]; // YYYY-MM-DD
-  }
-
-  function buildChartData(activity: ActivityData) {
-    const map: Record<string, number> = {};
-
-    const add = (items: { createdAt: string }[] = []) => {
-      items.forEach((item) => {
-        const day = normalizeTimestampToDay(item.createdAt);
-        map[day] = (map[day] || 0) + 1;
-      });
-    };
-
-    add(activity.tickets);
-    add(activity.workflows);
-    add(activity.insights);
-
-    const result: ChartData[] = Object.entries(map)
-      .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
-      .map(([date, total]) => ({ date, total }));
-
-    setChartData(result);
-    return result;
-  }
-
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date);
-    const referenceDate = Date.now();
-    let daysToSubtract = 90;
-    if (timeRange === "30d") {
-      daysToSubtract = 30;
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7;
-    }
-    const startDate = new Date(referenceDate);
-    startDate.setDate(startDate.getDate() - daysToSubtract);
-    //console.log("date >= startDate",date >= startDate)
-    return date >= startDate;
-  });
 
   return (
     <Card className="@container/card">

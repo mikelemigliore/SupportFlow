@@ -1,69 +1,20 @@
 "use client";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import handleDeleteTicketBtn from "@/utils/handleDeleteTicketBtn";
-
-const AIComparisonResults = [
-  {
-    id: 1,
-    date: "11/29/2025, 04:09 PM",
-    workflowA: {
-      name: "Password Reset Flow",
-      team: "Support – Tier 1",
-      optional: {
-        department: "Customer Support",
-        platform: "Zendesk",
-      },
-      steps: [
-        "Customer submits a 'Can't log in' ticket through Zendesk.",
-        "Agent reviews the ticket and verifies the customer email.",
-        "Agent opens the internal Identity Portal.",
-        "Agent manually triggers a password reset email.",
-        "Customer receives the reset email and clicks the link.",
-        "Customer completes the reset form.",
-        "Agent closes the ticket as 'Resolved'.",
-      ],
-    },
-    workflowB: {
-      name: "MFA Password Reset Escalation",
-      team: "IT – Security",
-      optional: {
-        department: "IT Access Request",
-        platform: "Okta",
-      },
-      steps: [
-        "Employee submits an access ticket in the internal IT portal.",
-        "IT Helpdesk reviews the ticket and checks user identity info.",
-        "IT checks MFA status in Okta Admin.",
-        "If the MFA device is locked or missing, IT opens an identity verification form.",
-        "Agent validates the employee identity using HR database cross-check.",
-        "IT unlocks MFA, then resets the password through Okta dashboard.",
-        "System sends a forced-password-change email to the employee.",
-        "IT agent updates ticket with audit notes and resolves it.",
-      ],
-    },
-    aiAnalysis: {
-      highLevelComparison:
-        "Workflow A handles customer password resets, while Workflow B handles internal employee MFA resets.",
-      keyDifferences:
-        "Workflow A is customer-facing through Zendesk, while Workflow B is internal and uses Okta and HR systems. Workflow B adds identity verification complexity and MFA checks.",
-      bottlenecks:
-        "Workflow A slows down due to manual email verification. Workflow B slows due to HR verification and multiple system dependencies.",
-      recommendations:
-        "Automate email verification in Workflow A; integrate HR checks into the IT portal for Workflow B.",
-    },
-  },
-];
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 
 interface WorkflowABProps {
   id: string;
@@ -77,11 +28,11 @@ interface WorkflowABProps {
 
 interface WorkflowProps {
   id: string;
-  nameWorkflow: string;
+  name: string;
   date: string;
   team: string;
   bottlenecks: string;
-  highLevelComparison: string;
+  summary: string;
   keyDifferences: string;
   recommendations: string;
   createdAt: Date;
@@ -109,13 +60,10 @@ function ComparisonDetailPage() {
         }
 
         const data = await res.json();
-        //console.log("Data", data)
         const found = data.workflow.find((t: WorkflowProps) => t.id === id);
-        //console.log("Found workflow:", found);
 
         if (!found) {
           setError("Workflow not found");
-          //console.log("Error:", error);
         } else {
           setWorkflow(found);
         }
@@ -133,25 +81,25 @@ function ComparisonDetailPage() {
     if (deleted) {
       const timer = setTimeout(() => {
         router.push("/pastComparisons");
-      }, 2000); // 2 second delay
+      }, 2000);
 
-      return () => clearTimeout(timer); // cleanup
+      return () => clearTimeout(timer);
     }
     setDeleted(false);
   }, [deleted]);
 
   const handleDeleteWorkflow = async () => {
-    //console.log("Result:", ticket);
     if (!workflow) return;
 
     try {
       //console.log("Workflow", workflow);
       await handleDeleteTicketBtn({
         type: "workflow",
-        id: workflow.id, // ✅ this is what your API expects
-        userId: workflow.userId, // or remove if not needed
+        id: workflow.id,
+        userId: workflow.userId,
       });
       setDeleted(true);
+      toast("Workflow Deleted Successfully");
     } catch (err: any) {
       console.error(err?.message || "Failed to save ticket.");
     }
@@ -159,90 +107,156 @@ function ComparisonDetailPage() {
 
   return (
     <div>
-      {/* <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/workflows">Workflows</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/pastComparisons">
-              Past Comparisons
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{`Comparison Details (ID: ${workflow?.id})`}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb> */}
-      <h1>Comparison Details</h1>
+      <div className="w-full relative flex justify-start space-x-25 h-[92vh] items-center">
+        <Card className="w-[46.5vw] h-[72.5vh] ml-25">
+          {deleted ? (
+            ""
+          ) : (
+            <CardHeader>
+              <CardTitle>
+                {deleted ? "" : `Workflow: ${workflow?.id}`}
+              </CardTitle>
+              <CardDescription>
+                Below you will see all the info available about this workflow
+                comparison.
+              </CardDescription>
+            </CardHeader>
+          )}
+          <CardContent>
+            {deleted ? (
+              <div className="flex items-center justify-center my-[20vh]">
+                <Spinner className="size-25" />
+              </div>
+            ) : (
+              <div>
+                <div className="flex flex-col gap-6">
+                  <div className="flex space-x-16">
+                    <div className="grid gap-2 w-[10vw]">
+                      <Label htmlFor="date">Date</Label>
+                      <p>{workflow?.date}</p>
+                    </div>
+                    <div className="grid gap-2">
+                      <div className="flex items-center">
+                        <Label htmlFor="createdBy">Created By</Label>
+                      </div>
+                      {workflow?.name}
+                    </div>
+                    <div className="space-y-6">
+                      <div className="grid gap-2">
+                        <div className="flex items-center">
+                          <Label htmlFor="team">Team</Label>
+                        </div>
+                        {workflow?.team}
+                      </div>
+                    </div>
+                    <div className="space-y-6">
+                      <div className="grid gap-2">
+                        <div className="flex items-center">
+                          <Label htmlFor="department">Department</Label>
+                        </div>
+                        {workflow?.workflowA[0].workflowType || "N/A"}
+                      </div>
+                    </div>
+                    <div className="space-y-6">
+                      <div className="grid gap-2">
+                        <div className="flex items-center">
+                          <Label htmlFor="platform">Platform</Label>
+                        </div>
+                        {workflow?.workflowA[0].system || "N/A"}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex space-x-9 mt-6">
+                    <div className="space-y-6">
+                      <div className="grid gap-2 w-[20vw]">
+                        <Label htmlFor="titleA">Title for A</Label>
+                        {workflow?.workflowA[0].title}
+                      </div>
+                      <div className="grid gap-2 overflow-y-auto">
+                        <div className="flex items-center">
+                          <Label htmlFor="textA">Workflow A</Label>
+                        </div>
+                        {workflow?.workflowA[0].text}
+                      </div>
+                    </div>
+                    <div className="h-[41.5vh] w-px bg-gray-300"></div>
+                    <div className="space-y-6">
+                      <div className="grid gap-2 w-[20vw]">
+                        <Label htmlFor="titleA">Title for B</Label>
+                        {workflow?.workflowB[0].title}
+                      </div>
+                      <div className="grid gap-2 overflow-y-auto">
+                        <div className="flex items-center">
+                          <Label htmlFor="textB">Workflow B</Label>
+                        </div>
+                        {workflow?.workflowB[0].text}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+        <Card className=" relative w-[26vw] h-[72.5vh]">
+          <CardHeader>
+            <CardTitle>AI Analysis</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {deleted ? (
+              <div className="flex items-center justify-center my-[20vh]">
+                <Spinner className="size-25" />
+              </div>
+            ) : (
+              <div>
+                <div
+                  className={`max-h-[27vw] ${
+                    workflow ? "overflow-y-auto" : ""
+                  }`}
+                >
+                  {error && <p className="text-red-500 mb-4">{error}</p>}
 
-      <p>
-        <b>Date:</b> {workflow?.date}
-      </p>
-      <p>
-        <b>Created By:</b> {workflow?.nameWorkflow}
-      </p>
-      <div className="flex justify-between p-4">
-        <div>
-          <h2>Workflow A</h2>
-          <p>
-            <b>Name:</b> {workflow?.workflowA[0].title}
-          </p>
-          <p>
-            <b>Team:</b> {workflow?.team}
-          </p>
-          <p>
-            <b>Department:</b> {workflow?.workflowA[0].workflowType || "N/A"}
-          </p>
-          <p>
-            <b>Platform:</b> {workflow?.workflowA[0].system || "N/A"}
-          </p>
-          <p>
-            <b>Steps:</b> {workflow?.workflowA[0].text}
-          </p>
-        </div>
-        <div>
-          <h2>Workflow B</h2>
-          <p>
-            <b>Name:</b> {workflow?.workflowB[0].title}
-          </p>
-          <p>
-            <b>Team:</b> {workflow?.workflowB[0].team}
-          </p>
-          <p>
-            <b>Department:</b> {workflow?.workflowB[0].workflowType || "N/A"}
-          </p>
-          <p>
-            <b>Platform:</b> {workflow?.workflowB[0].system || "N/A"}
-          </p>
-          <p>
-            <b>Steps:</b> {workflow?.workflowB[0].text}
-          </p>
-        </div>
+                  <div className="flex flex-col gap-6">
+                    <div className="grid gap-2">
+                      <Label htmlFor="highLevelComparison">
+                        <b>High Level Comparison</b>
+                      </Label>
+                      {workflow?.summary}
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="keyDifferences">
+                        <b>Key Differences</b>
+                      </Label>
+                      {workflow?.keyDifferences}
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="bottlenecks">
+                        <b>Bottlenecks</b>
+                      </Label>
+                      {workflow?.bottlenecks}
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="recommendations">
+                        <b>Recommendations</b>
+                      </Label>
+                      {workflow?.recommendations}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex-col gap-2 pt-5">
+                  <Button
+                    className="cursor-pointer w-full"
+                    onClick={handleDeleteWorkflow}
+                  >
+                    Delete Comparison
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
-      <h1>
-        <b>AI Analysis</b>
-      </h1>
-      <p>
-        <b>High Level Comparison:</b> {workflow?.highLevelComparison}
-      </p>
-      <p>
-        <b>Key Differences:</b> {workflow?.keyDifferences}
-      </p>
-      <p>
-        <b>Bottlenecks:</b> {workflow?.bottlenecks}
-      </p>
-      <p>
-        <b>Recommendations:</b> {workflow?.recommendations}
-      </p>
-      <Button onClick={handleDeleteWorkflow}>Delete Ticket</Button>
-      {deleted && <p>Ticket deleted successfully. Redirecting...</p>}
     </div>
   );
 }

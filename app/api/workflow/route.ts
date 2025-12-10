@@ -47,28 +47,30 @@ export async function POST(req: NextRequest) {
     //console.log("Received ticket data:", body);
 
     const {
+      type,
       date,
       bottlenecks,
       team,
-      highLevelComparison,
+      summary,
       keyDifferences,
       recommendations,
       workflowA,
       workflowB,
-      nameWorkflow,
+      name,
     } = body;
 
     // Note: we NO LONGER accept userId from the client
     if (
+      !type ||
       !date ||
       !bottlenecks ||
-      !highLevelComparison ||
+      !summary ||
       !keyDifferences ||
       !recommendations ||
       !workflowA ||
       !workflowB ||
       !team ||
-      !nameWorkflow
+      !name
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -78,14 +80,15 @@ export async function POST(req: NextRequest) {
 
     const workflow = await db.workflows.create({
       data: {
+        type,
         userId, // from session
         date,
         bottlenecks,
-        highLevelComparison,
+        summary,
         keyDifferences,
         recommendations,
         team,
-        nameWorkflow,
+        name,
 
         // nested create for the relation
         workflowA: {
@@ -114,7 +117,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log("Workflow", workflow)
+    //console.log("Workflow", workflow)
 
     return NextResponse.json({ workflow }, { status: 201 });
   } catch (err) {

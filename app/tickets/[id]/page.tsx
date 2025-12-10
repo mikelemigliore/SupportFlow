@@ -1,36 +1,24 @@
 "use client";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import handleDeleteTicketBtn from "@/utils/handleDeleteTicketBtn";
 import { useRouter } from "next/navigation";
-
-const AIresults = [
-  {
-    id: 1,
-    date: "11/29/2025, 03:30 PM",
-    summary:
-      "The customer is unable to access their account due to forgetting their password.",
-    category: "Access",
-    priority: "high",
-    team: "Support",
-    suggestedReply:
-      "Please follow the password reset link to regain access to your account.",
-    automationIdea:
-      "Implement a self-service password reset feature on the login page.",
-  },
-];
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 
 interface Ticket {
   id: string;
+  name: string;
   userId: string;
   date: string;
   text: string;
@@ -85,19 +73,23 @@ function TicketDetailPage() {
     if (deleted) {
       const timer = setTimeout(() => {
         router.push("/pastTickets");
-      }, 2000); // 2 second delay
+      }, 2000);
 
-      return () => clearTimeout(timer); // cleanup
+      return () => clearTimeout(timer);
     }
     setDeleted(false);
   }, [deleted]);
 
-  if (loading) return <p>Loading ticket…</p>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center my-[30vh]">
+        <Spinner className="size-25" />
+      </div>
+    );
   if (error) return <p className="text-red-500">{error}</p>;
   if (!ticket) return <p>Ticket not found.</p>;
 
   const handleDeleteTicket = async () => {
-    //console.log("Result:", ticket);
     if (!ticket) return;
 
     try {
@@ -105,70 +97,95 @@ function TicketDetailPage() {
         type: "ticket",
         id: String(ticket.id),
         userId: String(ticket.userId),
-        // date: String(ticket.date ?? ""),
-        // text: String(ticket.text ?? ""),
-        // source: String(ticket.source ?? ""),
-        // summary: String(ticket.summary ?? ""),
-        // category: String(ticket.category ?? ""),
-        // priority: String(ticket.priority ?? ""),
-        // team: String(ticket.team ?? ""),
-        // suggestedReply: String(ticket.suggestedReply ?? ""),
-        // automationIdea: String(ticket.automationIdea ?? ""),
       });
       setDeleted(true);
-
-      // router.push("/pastTickets");
+      toast("Ticket Deleted Successfully");
     } catch (err: any) {
       console.error(err?.message || "Failed to save ticket.");
     }
   };
 
   return (
-    <div>
-      {/* <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/tickets">Tickets Page</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/pastTickets">Past Tickets</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{`Ticket Details (ID: ${id})`}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb> */}
-      <h1>Ticket Details</h1>
+    <div className="flex justify-center items-center py-20">
+      <Card className=" relative w-[60vw] h-[62vh] overflow-y-auto">
+        {deleted ? (
+          ""
+        ) : (
+          <CardHeader>
+            <CardTitle>{deleted ? "" : `Ticket: ${ticket.id}`}</CardTitle>
+            <CardDescription>
+              Below you will see all the info available about this ticket.
+            </CardDescription>
+          </CardHeader>
+        )}
 
-      <p>
-        <b>Date:</b> {ticket.date}
-      </p>
-      <p>
-        <b>Created By:</b> {ticket.nameTicket}
-      </p>
-      <p>
-        <b>Category:</b> {ticket.category}
-      </p>
-      <p>
-        <b>Priority:</b> {ticket.priority}
-      </p>
-      <p>
-        <b>Team:</b> {ticket.team}
-      </p>
-      <p>
-        <b>Suggested Reply:</b> {ticket.suggestedReply}
-      </p>
-      <p>
-        <b>Automation Idea:</b> {ticket.automationIdea}
-      </p>
-      <Button onClick={handleDeleteTicket}>Delete Ticket</Button>
-      {deleted && <p>Ticket deleted successfully. Redirecting...</p>}
+        <CardContent>
+          {deleted ? (
+            <div className="flex items-center justify-center my-[20vh]">
+              <Spinner className="size-25" />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="gap-3">
+                <Label htmlFor="date">
+                  <b>Date</b>
+                </Label>
+                <p>{ticket.date}</p>
+              </div>
+              <div className="gap-3">
+                <Label htmlFor="name">
+                  <b>Name</b>
+                </Label>
+                <p>{ticket.name}</p>
+              </div>
+              <div className=" gap-3">
+                <Label htmlFor="priority">
+                  <b>Priority</b>
+                </Label>
+                <p>{ticket.priority}</p>
+              </div>
+              <div className=" gap-3">
+                <Label htmlFor="category">
+                  <b>Category</b>
+                </Label>
+                <p>{ticket.category}</p>
+              </div>
+              <div className=" gap-3">
+                <Label htmlFor="team">
+                  <b>Team</b>
+                </Label>
+                <p>{ticket.team}</p>
+              </div>
+              <div className="gap-3">
+                <Label htmlFor="summary">
+                  <b>Summary</b>
+                </Label>
+                <p>{ticket.summary}</p>
+              </div>
+              <div className="gap-3">
+                <Label htmlFor="suggestedReply">
+                  <b>Suggested Reply</b>
+                </Label>
+                <p>{ticket.suggestedReply}</p>
+              </div>
+              <div className="gap-3">
+                <Label htmlFor="automationIdea">
+                  <b>Automation Idea</b>
+                </Label>
+                <p>{ticket.automationIdea}</p>
+              </div>
+              <div className="absolute top-7 right-10">
+                <Button
+                  className="cursor-pointer w-[7vw]"
+                  onClick={handleDeleteTicket}
+                >
+                  Delete Ticket
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -3,57 +3,35 @@ export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { db } from "@/lib/db";
+import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
 
-/**
- * Helper: build an SES client only if env vars exist.
- * This avoids crashing the build when keys are missing.
- */
-function getSesClient() {
-  const region = process.env.AWS_REGION;
-  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-
-  if (!region || !accessKeyId || !secretAccessKey) {
-    console.log("Error");
-    return null;
-  }
-  console.log("Works");
-  return new SESClient({
-    region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-    },
-  });
-}
+const mailerSend = new MailerSend({
+  apiKey: process.env.MAILSEND_API_TOKEN || "",
+});
 
 export async function POST(req: NextRequest) {
   try {
-    const email = "mikelemigliore@hotmail.com";
-    //const { email } = await req.json();
+    //const email = "mikelemigliore@hotmail.com";
+    const { email } = await req.json();
 
-    // if (!email) {
-    //   return NextResponse.json({ error: "Email is required" }, { status: 400 });
-    // }
+    if (!email) {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    }
 
-    // // 1) Look up the user via Prisma
-    // const existingUser = await db.user.findUnique({
-    //   where: { email },
-    // });
+    const existingUser = await db.user.findUnique({
+      where: { email },
+    });
 
-    // if (!existingUser) {
-    //   // You can also return 200 here to avoid leaking which emails exist
-    //   return NextResponse.json(
-    //     { error: "Email does not exist" },
-    //     { status: 400 }
-    //   );
-    // }
+    if (!existingUser) {
+      return NextResponse.json(
+        { error: "Email does not exist" },
+        { status: 400 }
+      );
+    }
 
-    // 2) Create raw token (for URL) and hashed token (stored in DB)
+    // 1) Generate token (raw for URL, hashed for DB)
     const rawToken = crypto.randomBytes(32).toString("hex");
-
     const hashedToken = crypto
       .createHash("sha256")
       .update(rawToken)
@@ -61,42 +39,22 @@ export async function POST(req: NextRequest) {
 
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
-    // 3) Save to user record
-    // await db.user.update({
-    //   where: { id: existingUser.id },
-    //   data: {
-    //     resetToken: hashedToken,
-    //     resetTokenExpiry: expiresAt,
-    //   },
-    // });
+    // 2) Save to DB (uncomment when ready)
+    await db.user.update({
+      where: { id: existingUser.id },
+      data: {
+        resetToken: hashedToken,
+        resetTokenExpiry: expiresAt,
+      },
+    });
 
-    // 4) Build reset URL
+    // 3) Build reset URL
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-
-    // adjust the path to match your actual reset page route
     const resetUrl = `${baseUrl}/resetpassword/${rawToken}`;
 
-    // 5) Prepare SES client
-    const ses = getSesClient();
-    // if (!ses) {
-    //   // roll back token if email service is not configured
-    //   await db.user.update({
-    //     where: { id: existingUser.id },
-    //     data: {
-    //       resetToken: null,
-    //       resetTokenExpiry: null,
-    //     },
-    //   });
-
-    //   return NextResponse.json(
-    //     { error: "Email service not configured" },
-    //     { status: 500 }
-    //   );
-    // }
-
-    const fromAddress =
-      // process.env.SES_FROM_EMAIL ||
-      "Support Flow <no-reply@supportflow360.com>";
+    // 4) Prepare email content
+    const fromEmail = "no-reply@supportflow360.com"; // MUST be from your verified MailerSend domain
+    const fromName = "Support Flow";
 
     const htmlBody = `
       <p>Hello,</p>
@@ -107,23 +65,33 @@ export async function POST(req: NextRequest) {
       <p>– Support Flow</p>
     `;
 
-    const command = new SendEmailCommand({
-      Source: fromAddress,
-      Destination: {
-        ToAddresses: [email],
-      },
-      Message: {
-        Subject: { Data: "Reset your Support Flow password" },
-        Body: {
-          Html: { Data: htmlBody },
-        },
-      },
-    });
+    const textBody = `
+Hello,
 
-    const result = await ses?.send(command);
+You requested to reset your Support Flow password.
 
-    // you can inspect result if you want, but usually just assume success
-    console.log("SES send result:", result);
+Open this link to reset it (valid for 1 hour):
+${resetUrl}
+
+If you did not request this, you can ignore this email.
+
+– Support Flow
+`.trim();
+
+    // 5) Build MailerSend params
+    const sentFrom = new Sender(fromEmail, fromName);
+    const recipients = [new Recipient(email, "Support Flow user")];
+
+    const emailParams = new EmailParams()
+      .setFrom(sentFrom)
+      .setTo(recipients)
+      .setSubject("Reset your Support Flow password")
+      .setHtml(htmlBody)
+      .setText(textBody);
+
+    // 6) Send with MailerSend
+    const response = await mailerSend.email.send(emailParams);
+    //console.log("MailerSend send result:", response);
 
     return NextResponse.json(
       { message: "Password reset email sent" },
@@ -131,9 +99,6 @@ export async function POST(req: NextRequest) {
     );
   } catch (error) {
     console.error("Error in forgot password route:", error);
-
-    // You might optionally clear token on errors by querying again,
-    // but usually if we failed before saving or sending it's fine.
 
     return NextResponse.json(
       { error: "Failed to send reset email" },

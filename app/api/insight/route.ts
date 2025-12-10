@@ -45,22 +45,24 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     const {
+      type,
       date,
-      overallSummary,
+      summary,
       recurringIssues,
       automationIdeas,
       suggestedFaqs,
-      nameInsight
+      name
     } = body;
 
     // Note: we NO LONGER accept userId from the client
     if (
+      !type ||
       !date ||
-      !overallSummary ||
+      !summary ||
       !recurringIssues ||
       !automationIdeas ||
       !suggestedFaqs ||
-      !nameInsight
+      !name
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -70,17 +72,17 @@ export async function POST(req: NextRequest) {
 
     const insights = await db.insights.create({
       data: {
+        type,
         userId, // from session
         date,
-        nameInsight,
-        overallSummary,
+        name,
+        summary,
         recurringIssues,
         automationIdeas,
         suggestedFaqs,
       },
     });
 
-    //console.log("Workflow", workflow)
 
     return NextResponse.json({ insights }, { status: 201 });
   } catch (err) {

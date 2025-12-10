@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+
 import {
   Card,
   CardAction,
@@ -66,7 +67,7 @@ export function SignInForm() {
 
   const handleContinueAsGuest = async () => {
     const res = await fetch("/api/auth/guest", { method: "POST" });
-    const data = await res.json();
+    //const data = await res.json();
 
     if (!res.ok) {
       console.log("Error");
@@ -124,7 +125,11 @@ export function SignInForm() {
               </div>
             </Field>
             <Field className="space-y-2">
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full cursor-pointer"
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -134,14 +139,19 @@ export function SignInForm() {
                   "Sign In"
                 )}
               </Button>
-              <Button onClick={handleContinueAsGuest}>Continue as Guest</Button>
+              <Button
+                className="cursor-pointer"
+                onClick={handleContinueAsGuest}
+              >
+                Continue as Guest
+              </Button>
               <div className="p-2">
                 <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                   Or continue with
                 </FieldSeparator>
               </div>
+                <GoogleSignInButton />
 
-              <GoogleSignInButton />
               <GithubSignInButton />
               <div className="flex items-center justify-center gap-2 pt-2">
                 <h3>Don't have an account?</h3>

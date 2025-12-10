@@ -1,32 +1,8 @@
-import { useState } from "react";
-
-// type WorkflowProps = {
-//   title: string;
-//   team: string;
-//   workflowType?: string;
-//   system?: string;
-//   text: string;
-// };
 
 async function handleDeleteTicketBtn(Data: {
   type: string;
   id: string;
   userId: string;
-  // bottlenecks?: string;
-  // highLevelComparison?: string;
-  // keyDifferences?: string;
-  // recommendations?: string;
-  // date: string;
-  // text?: string;
-  // source?: string;
-  // summary?: string;
-  // category?: string;
-  // priority?: string;
-  // team?: string;
-  // suggestedReply?: string;
-  // automationIdea?: string;
-  // workflowA?: WorkflowProps;
-  // workflowB?: WorkflowProps;
 }) {
   //console.log("Saving ticket data:", ticketData);
   if (Data.type === "ticket") {

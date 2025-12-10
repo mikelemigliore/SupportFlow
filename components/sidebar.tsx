@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { signOut as nextAuthSignOut } from "next-auth/react";
+import { Spinner } from "@/components/ui/spinner";
+import { CiReceipt } from "react-icons/ci";
+import { GoWorkflow } from "react-icons/go";
+import { CgInsights } from "react-icons/cg";
 import {
   SidebarProvider,
   Sidebar,
@@ -21,6 +25,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import NavBar from "@/components/navBar";
+import { NavUser } from "@/components/NavUser";
 
 function SideBar() {
   const { user, isLoading, signOut, guestSignout } = useAuth();
@@ -28,7 +33,7 @@ function SideBar() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/"); 
+      router.push("/");
     }
   }, [user, isLoading, router]);
 
@@ -40,13 +45,16 @@ function SideBar() {
     } else {
       await nextAuthSignOut({ redirect: false });
       await signOut();
-      router.push("/"); 
+      router.push("/");
     }
   };
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center my-[30vh]">
+        <Spinner className="size-25" />
+      </div>
+    );
 
   return (
     <div>
@@ -59,13 +67,13 @@ function SideBar() {
                   <a href="/dashboard" className="my-3">
                     <Avatar>
                       <AvatarImage
-                        src="https://github.com/shadcn.png"
+                        src="/SupportflowLogo.svg"
                         alt="@shadcn"
                       />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <span className="text-base font-semibold">
-                      SupportFlow360
+                      AI/SupportFlow360
                     </span>
                   </a>
                 </SidebarMenuButton>
@@ -78,7 +86,10 @@ function SideBar() {
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
                     >
-                      <Link href="/tickets">Ticket</Link>
+                      <div>
+                        <CiReceipt />
+                        <Link href="/tickets">Ticket</Link>
+                      </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
@@ -86,7 +97,10 @@ function SideBar() {
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
                     >
-                      <Link href="/workflows">Workflow</Link>
+                      <div>
+                        <GoWorkflow />
+                        <Link href="/workflows">Workflow</Link>
+                      </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
@@ -94,7 +108,10 @@ function SideBar() {
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
                     >
-                      <Link href="/insights">Insight</Link>
+                      <div>
+                        <CgInsights />
+                        <Link href="/insights">Insight</Link>
+                      </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </div>
@@ -105,7 +122,10 @@ function SideBar() {
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
                     >
-                      <Link href="/pastTickets">Tickets</Link>
+                      <div>
+                        <CiReceipt />
+                        <Link href="/pastTickets">Ticket</Link>
+                      </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
@@ -113,7 +133,10 @@ function SideBar() {
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
                     >
-                      <Link href="/pastComparisons">Workflows</Link>
+                      <div>
+                        <GoWorkflow />
+                        <Link href="/pastComparisons">Workflow</Link>
+                      </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
@@ -121,7 +144,10 @@ function SideBar() {
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
                     >
-                      <Link href="/pastInsights">Insights</Link>
+                      <div>
+                        <CgInsights />
+                        <Link href="/pastInsights">Insight</Link>
+                      </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </div>
@@ -130,7 +156,8 @@ function SideBar() {
           </SidebarHeader>
           <SidebarContent></SidebarContent>
           <SidebarFooter>
-            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+            <NavUser userName={user?.name} userEmail={user?.email} />
+            {/* <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src="https://github.com/shadcn.png"
@@ -144,8 +171,12 @@ function SideBar() {
                   {user?.email}
                 </span>
               </div>
-            </div>
-            <Button variant="outline" onClick={handleSignOut}>
+            </div> */}
+            <Button
+              className="cursor-pointer"
+              variant="outline"
+              onClick={handleSignOut}
+            >
               Sign Out
             </Button>
           </SidebarFooter>

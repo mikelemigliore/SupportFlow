@@ -18,6 +18,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { IconFolderCode } from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
 
 const ComparisonResults = [
   {
@@ -263,73 +279,161 @@ function PastComparisonsPage() {
 
   return (
     <div>
-      {/* <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/workflows">Workflows</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Past Comparisons</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb> */}
-      <h1>Past Comparisons</h1>
-      <Select
-        value={sortMode}
-        onValueChange={(v) => setSortMode(v as SortMode)}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Sort" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Sort</SelectLabel>
-            <SelectItem value="date_desc">Newest first</SelectItem>
-            <SelectItem value="date_asc">Oldest first</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <Select
-        value={teamFilter}
-        onValueChange={(v) => setTeamFilter(v as TeamFilter)}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Source" />
-        </SelectTrigger>
-        <SelectContent>
-          {teams.map((team) => (
-            <SelectItem key={team.value} value={team.value}>
-              {team.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex p-10 pb-[0vh] space-x-5">
+        <Select
+          value={sortMode}
+          onValueChange={(v) => setSortMode(v as SortMode)}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sort" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Sort</SelectLabel>
+              <SelectItem value="date_desc">Newest first</SelectItem>
+              <SelectItem value="date_asc">Oldest first</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Select
+          value={teamFilter}
+          onValueChange={(v) => setTeamFilter(v as TeamFilter)}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Source" />
+          </SelectTrigger>
+          <SelectContent>
+            {teams.map((team) => (
+              <SelectItem key={team.value} value={team.value}>
+                {team.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       <div>
         {!workflow || workflow.length === 0 ? (
-          <p> No past AI tickets results</p>
+          <div className="flex items-center justify-center h-full mt-[20vh]">
+            <Empty>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <IconFolderCode />
+                </EmptyMedia>
+                <EmptyTitle>Empty</EmptyTitle>
+                <EmptyDescription>
+                  You haven&apos;t created any ticket yet. Get started by
+                  creating a ticket.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          </div>
         ) : (
-          <div className="space-y-10">
+          <div className="space-y-8 p-10 space-x-5 grid grid-cols-3">
             {workflow.map((result) => (
-              <div className="border-5 border-blue-500" key={result.id}>
-                <p>{result.date}</p>
-                <p>{result.nameWorkflow}</p>
-                <p>{result.workflowA[0]?.title}</p>
-                <p>{result.workflowB[0]?.title}</p>
-                <p>{result.highLevelComparison}</p>
-                <div>
-                  <Link href={`workflows/${result.id}`}>View</Link>
-                </div>
-              </div>
+              <Card className="relative w-[30vw] h-[29vh] py-0 gap-3">
+                <CardHeader></CardHeader>
+                <CardAction className=""></CardAction>
+                <CardContent className="space-y-3 grid grid-cols-2">
+                  <div className=" gap-2">
+                    <Label htmlFor="date">
+                      <b>Date</b>
+                    </Label>
+                    <p>{result.date}</p>
+                  </div>
+                  <div className=" gap-2">
+                    <Label htmlFor="createdBy">
+                      <b>Created By</b>
+                    </Label>
+                    <p>{result.name}</p>
+                  </div>
+                  <div className=" gap-2">
+                    <Label htmlFor="titleA">
+                      <b>Title Workflow A</b>
+                    </Label>
+                    <p>{result.workflowA[0]?.title}</p>
+                  </div>
+                 <div className=" gap-2">
+                    <Label htmlFor="titleB">
+                      <b>Title Workflow B</b>
+                    </Label>
+                    <p>{result.workflowB[0]?.title}</p>
+                  </div>
+                  <div className="w-[12vw] gap-2">
+                    <Label htmlFor="summary">
+                      <b>Summary</b>
+                    </Label>
+                    <p>
+                      {result.summary.length > 100
+                        ? result.summary.slice(0, 100) + "..."
+                        : result.summary}
+                    </p>
+                  </div>
+                  <div className="absolute bottom-4 right-10">
+                    <Button asChild className="cursor-pointer w-[7vw]">
+                      <Link href={`workflows/${result.id}`}>View</Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
       </div>
     </div>
+    // <div>
+    //   <h1>Past Comparisons</h1>
+    //   <Select
+    //     value={sortMode}
+    //     onValueChange={(v) => setSortMode(v as SortMode)}
+    //   >
+    //     <SelectTrigger className="w-[180px]">
+    //       <SelectValue placeholder="Sort" />
+    //     </SelectTrigger>
+    //     <SelectContent>
+    //       <SelectGroup>
+    //         <SelectLabel>Sort</SelectLabel>
+    //         <SelectItem value="date_desc">Newest first</SelectItem>
+    //         <SelectItem value="date_asc">Oldest first</SelectItem>
+    //       </SelectGroup>
+    //     </SelectContent>
+    //   </Select>
+    //   <Select
+    //     value={teamFilter}
+    //     onValueChange={(v) => setTeamFilter(v as TeamFilter)}
+    //   >
+    //     <SelectTrigger className="w-[180px]">
+    //       <SelectValue placeholder="Source" />
+    //     </SelectTrigger>
+    //     <SelectContent>
+    //       {teams.map((team) => (
+    //         <SelectItem key={team.value} value={team.value}>
+    //           {team.label}
+    //         </SelectItem>
+    //       ))}
+    //     </SelectContent>
+    //   </Select>
+    //   <div>
+    //     {!workflow || workflow.length === 0 ? (
+    //       <p> No past AI tickets results</p>
+    //     ) : (
+    //       <div className="space-y-10">
+    //         {workflow.map((result) => (
+    //           <div className="border-5 border-blue-500" key={result.id}>
+    //             <p>{result.date}</p>
+    //             <p>{result.nameWorkflow}</p>
+    //             <p>{result.workflowA[0]?.title}</p>
+    //             <p>{result.workflowB[0]?.title}</p>
+    //             <p>{result.summary}</p>
+    //             <div>
+    //               <Link href={`workflows/${result.id}`}>View</Link>
+    //             </div>
+    //           </div>
+    //         ))}
+    //       </div>
+    //     )}
+    //   </div>
+    // </div>
   );
 }
 export default PastComparisonsPage;

@@ -30,10 +30,10 @@ model User {
 model Insights {
   id             String   @id @default(cuid())
   userId         String
-
+  type           String
   date           String
-  nameInsight    String
-  overallSummary String   @db.Text
+  name    String
+  summary String   @db.Text
   recurringIssues String  @db.Text
   automationIdeas String  @db.Text
   suggestedFaqs   String  @db.Text
@@ -50,11 +50,12 @@ model Workflows {
   userId         String
 
   // comes from AI
-  nameWorkflow    String
+  type           String
+  name    String
   date           String        // store as string for now (matches '11/30/2025, 03:37 PM')
   team           String
   bottlenecks        String   @db.Text
-  highLevelComparison String   @db.Text
+  summary String   @db.Text
   keyDifferences String   @db.Text
   recommendations String   @db.Text
   createdAt      DateTime @default(now())
@@ -97,7 +98,8 @@ model Tickets {
   userId         String
 
   // comes from AI
-  nameTicket     String
+  type           String
+  name     String
   date           String        // store as string for now (matches '11/30/2025, 03:37 PM')
   summary        String   @db.Text
   category       String

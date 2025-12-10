@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -14,8 +14,8 @@ import {
   SortingState,
   useReactTable,
   VisibilityState,
-} from "@tanstack/react-table"
-
+} from "@tanstack/react-table";
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -25,24 +25,24 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = React.useState({})
+  const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+    React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  )
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  );
+  const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
     data,
@@ -69,7 +69,7 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
+  });
 
   return (
     <div className="flex flex-col gap-4">
@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -100,14 +100,48 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    const isSummary =
+                      (cell.column.columnDef as any).accessorKey === "summary";
+
+                    const rawValue = cell.getValue() as
+                      | string
+                      | null
+                      | undefined;
+                    const text = rawValue ?? "";
+
+                    return (
+                      <TableCell key={cell.id}>
+                        {isSummary ? (
+                          <span className="block max-w-[400px]">
+                            {text.length > 90
+                              ? text.slice(0, 90) + "..."
+                              : text}
+                          </span>
+                        ) : (
+                          flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                  <TableCell>
+                    {(row.original as any).type === "Ticket" ? (
+                      <Link href={`/tickets/${(row.original as any).id}`}>
+                        View
+                      </Link>
+                    ) : (row.original as any).type === "Workflow" ? (
+                      <Link href={`/workflows/${(row.original as any).id}`}>
+                        View
+                      </Link>
+                    ) : (
+                      <Link href={`/insights/${(row.original as any).id}`}>
+                        View
+                      </Link>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
@@ -124,5 +158,5 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
     </div>
-  )
+  );
 }

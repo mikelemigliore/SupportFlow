@@ -20,7 +20,7 @@ function NavBar() {
   if (!pathname) return null;
 
   const normalized = normalizePath(pathname);
-  let crumbs: Crumb[] = ROUTE_CRUMBS[normalized];
+  let crumbs: Crumb[] = ROUTE_CRUMBS[normalized] ?? [];
 
   return (
     <header className="flex w-full items-center justify-between px-6 py-3 border-b">
@@ -48,15 +48,15 @@ function NavBar() {
       </Breadcrumb>
 
       <div className="space-x-4">
-        <Button size="sm" >
+        <Button size="sm">
           <IconCirclePlusFilled />
           <Link href="/tickets">Quick Ticket</Link>
         </Button>
-        <Button size="sm" >
+        <Button size="sm">
           <IconCirclePlusFilled />
           <Link href="/workflows">Quick Workflow </Link>
         </Button>
-        <Button size="sm" >
+        <Button size="sm">
           <IconCirclePlusFilled />
           <Link href="/insights">Quick Insight</Link>
         </Button>

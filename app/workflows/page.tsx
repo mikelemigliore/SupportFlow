@@ -15,15 +15,25 @@ import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import handleSaveBtn from "@/utils/handleSaveBtn";
 import { useAuth } from "@/lib/auth-context";
+import { Label } from "@/components/ui/label";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { IconFolderCode } from "@tabler/icons-react";
+import { toast } from "sonner";
 
 const teams = [
   { value: "support-tier-1", label: "Support – Tier 1" },
@@ -213,11 +223,11 @@ function WorkflowsPage() {
 
     try {
       await handleSaveBtn({
-        type: "workflow",
+        type: "Workflow",
         team: String(result.team ?? ""),
-        nameWorkflow: String(result.name),
+        name: String(result.name),
         bottlenecks: String(result.bottlenecks ?? ""),
-        highLevelComparison: String(result.highLevelComparison ?? ""),
+        summary: String(result.summary ?? ""),
         keyDifferences: String(result.keyDifferences ?? ""),
         recommendations: String(result.recommendations ?? ""),
         userId: String(user.id),
@@ -225,7 +235,7 @@ function WorkflowsPage() {
         workflowA: workflowA,
         workflowB: workflowB,
       });
-      setSaveStatus("Workflow saved!");
+      toast("Workflow Comparison Saved Successfully");
     } catch (err: any) {
       setSaveStatus(err?.message || "Failed to save workflow.");
     }
@@ -233,249 +243,306 @@ function WorkflowsPage() {
 
   return (
     <div>
-      {/* <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Workflows Page</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb> */}
-      <h1>Workflows Page</h1>
-      <div className="">
-        <Link href={"/pastComparisons"}>View Past Comparisons</Link>
-        <Input
-          className="w-[10vw] flex"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your Name"
-        />
-      </div>
-
-      <div className="flex justify-between p-4">
-        <div className="w-[40vw]">
-          <h1>Workflow A</h1>
-          <Input
-            placeholder="Title"
-            value={workflowA.title}
-            onChange={
-              (e) =>
-                setWorkflowA((prev) => ({ ...prev, title: e.target.value })) //Study better
-            }
-          />
-          <Select
-            onValueChange={
-              (value) => setWorkflowA((prev) => ({ ...prev, team: value })) //Study better
-            }
-            value={workflowA.team}
-          >
-            <SelectTrigger className="w-[10vw]">
-              <SelectValue placeholder="Select a Team" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Source</SelectLabel>
-                {teams.map((team) => (
-                  <SelectItem key={team.value} value={team.value}>
-                    {team.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <h2>Optional</h2>
-          <Select
-            onValueChange={
-              (value) =>
-                setWorkflowA((prev) => ({ ...prev, workflowType: value })) //Study better
-            }
-            value={workflowA.workflowType}
-          >
-            <SelectTrigger className="w-[10vw]">
-              <SelectValue placeholder="Select a Workflow Types" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Workflow Types</SelectLabel>
-                {workflowTypes.map((workflowType) => (
-                  <SelectItem
-                    key={workflowType.value}
-                    value={workflowType.value}
-                  >
-                    {workflowType.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Select
-            onValueChange={
-              (value) => setWorkflowA((prev) => ({ ...prev, system: value })) //Study better
-            }
-            value={workflowA.system}
-          >
-            <SelectTrigger className="w-[10vw]">
-              <SelectValue placeholder="Select a System" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>System</SelectLabel>
-                {systems.map((system) => (
-                  <SelectItem key={system.value} value={system.value}>
-                    {system.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Textarea
-            onChange={(e) =>
-              setWorkflowA((prev) => ({ ...prev, text: e.target.value }))
-            }
-            className="w-[40vw] h-[30vh]"
-            placeholder="Enter workflow here..."
-          />
+      <div className="w-full relative flex justify-start space-x-25 h-[92vh] items-center">
+        <div className="absolute top-4 left-4 ml-2">
+          <Button size="sm" asChild>
+            <Link href={"/pastComparisons"}>View Past Comparisons</Link>
+          </Button>
         </div>
-        <div className="">
-          <h1>Workflow B</h1>
-          <Input
-            placeholder="Title"
-            value={workflowB.title}
-            onChange={
-              (e) =>
-                setWorkflowB((prev) => ({ ...prev, title: e.target.value })) //Study better
-            }
-          />
-          <Select
-            onValueChange={
-              (value) => setWorkflowB((prev) => ({ ...prev, team: value })) //Study better
-            }
-            value={workflowA.team}
-          >
-            <SelectTrigger className="w-[10vw]">
-              <SelectValue placeholder="Select a Team" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Source</SelectLabel>
-                {teams.map((team) => (
-                  <SelectItem key={team.value} value={team.value}>
-                    {team.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <h2>Optional</h2>
-          <Select
-            onValueChange={
-              (value) =>
-                setWorkflowB((prev) => ({ ...prev, workflowType: value })) //Study better
-            }
-            value={workflowB.workflowType}
-          >
-            <SelectTrigger className="w-[10vw]">
-              <SelectValue placeholder="Select a Workflow Types" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Workflow Types</SelectLabel>
-                {workflowTypes.map((workflowType) => (
-                  <SelectItem
-                    key={workflowType.value}
-                    value={workflowType.value}
+        <Card className="w-[46.5vw] h-[72.5vh] ml-25">
+          <CardHeader>
+            <CardTitle>Workflow Comparison</CardTitle>
+            <CardDescription>
+              Enter the info below for the two workflows, A and B, and let AI
+              analyze and compare them.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-6">
+              <div className="flex space-x-5">
+                <div className="grid gap-2 w-[10vw]">
+                  <Label htmlFor="createdBy">Created By</Label>
+                  <Input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your Name"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <div className="flex items-center">
+                    <Label htmlFor="team">Team</Label>
+                  </div>
+                  <Select
+                    onValueChange={
+                      (value) =>
+                        setWorkflowA((prev) => ({ ...prev, team: value })) //Study better
+                    }
+                    value={workflowA.team}
                   >
-                    {workflowType.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Select
-            onValueChange={
-              (value) => setWorkflowB((prev) => ({ ...prev, system: value })) //Study better
-            }
-            value={workflowB.system}
-          >
-            <SelectTrigger className="w-[10vw]">
-              <SelectValue placeholder="Select a System" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>System</SelectLabel>
-                {systems.map((system) => (
-                  <SelectItem key={system.value} value={system.value}>
-                    {system.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Textarea
-            onChange={(e) =>
-              setWorkflowB((prev) => ({ ...prev, text: e.target.value }))
-            }
-            className="w-[40vw] h-[30vh]"
-            placeholder="Enter workflow here..."
-          />
-        </div>
-      </div>
-      <div className="flex justify-center mt-8">
-        <Button
-          disabled={
-            !workflowA.title ||
-            !workflowB.title ||
-            !workflowA.team ||
-            //!workflowB.team ||
-            !workflowA.text ||
-            !workflowB.text ||
-            !name
-          }
-          onClick={handleCompare}
-        >
-          Compare Workflow
-        </Button>
-      </div>
-      <div>
-        <h1>Result</h1>
-        <div>
-          {error && <p className="text-red-500 mb-4">{error}</p>}
-          {loading && <Spinner className="size-8" />}
-          {result && (
-            <div className="border rounded p-4 space-y-2">
-              <h2 className="font-semibold">AI Analysis</h2>
-              <p>
-                <b>Date:</b> {result.date}
-              </p>
-              <p>
-                <b>Created By:</b> {result.name}
-              </p>
-              <p>
-                <b>Team:</b> {result.team}
-              </p>
-              <p>
-                <b>High Level Comparison:</b> {result.highLevelComparison}
-              </p>
-              <p>
-                <b>Key Differences:</b> {result.keyDifferences}
-              </p>
-              <p>
-                <b>Bottlenecks:</b> {result.bottlenecks}
-              </p>
-              <p>
-                <b>Recommendations:</b> {result.recommendations}
-              </p>
-              <p>
-                <b>Automation Ideas:</b> {result.automationIdeas}
-              </p>
-              <Button onClick={handleSave}>Save</Button>
-              {saveStatus && <p>{saveStatus}</p>}
+                    <SelectTrigger className="w-[10vw]">
+                      <SelectValue placeholder="Select a Team" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Teams</SelectLabel>
+                        {teams.map((team) => (
+                          <SelectItem key={team.value} value={team.value}>
+                            {team.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-6">
+                  <div className="grid gap-2">
+                    <div className="flex items-center">
+                      <Label htmlFor="soucre">Optional for A</Label>
+                    </div>
+                    <div className="flex space-x-3">
+                      <Select
+                        onValueChange={
+                          (value) =>
+                            setWorkflowA((prev) => ({
+                              ...prev,
+                              workflowType: value,
+                            })) //Study better
+                        }
+                        value={workflowA.workflowType}
+                      >
+                        <SelectTrigger className="w-[9vw]">
+                          <SelectValue placeholder="Workflow Types" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Workflow Types</SelectLabel>
+                            {workflowTypes.map((workflowType) => (
+                              <SelectItem
+                                key={workflowType.value}
+                                value={workflowType.value}
+                              >
+                                {workflowType.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <Select
+                        onValueChange={
+                          (value) =>
+                            setWorkflowA((prev) => ({ ...prev, system: value })) //Study better
+                        }
+                        value={workflowA.system}
+                      >
+                        <SelectTrigger className="w-[9vw]">
+                          <SelectValue placeholder="System" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>System</SelectLabel>
+                            {systems.map((system) => (
+                              <SelectItem
+                                key={system.value}
+                                value={system.value}
+                              >
+                                {system.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex space-x-9 mt-6">
+                <div className="space-y-6">
+                  <div className="grid gap-2 w-[20vw]">
+                    <Label htmlFor="title">Title</Label>
+                    <Input
+                      placeholder="Title"
+                      value={workflowA.title}
+                      onChange={
+                        (e) =>
+                          setWorkflowA((prev) => ({
+                            ...prev,
+                            title: e.target.value,
+                          })) //Study better
+                      }
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <div className="flex items-center">
+                      <Label htmlFor="text">Workflow A</Label>
+                    </div>
+                    <Textarea
+                      onChange={(e) =>
+                        setWorkflowA((prev) => ({
+                          ...prev,
+                          text: e.target.value,
+                        }))
+                      }
+                      className="w-[20vw] h-[30vh] resize-none"
+                      placeholder="Enter workflow here..."
+                    />
+                  </div>
+                </div>
+                <div className="h-[41.5vh] w-px bg-gray-300"></div>
+                <div className="space-y-6">
+                  <div className="grid gap-2 w-[20vw]">
+                    <Label htmlFor="title">Title</Label>
+                    <Input
+                      placeholder="Title"
+                      value={workflowB.title}
+                      onChange={
+                        (e) =>
+                          setWorkflowB((prev) => ({
+                            ...prev,
+                            title: e.target.value,
+                          })) //Study better
+                      }
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <div className="flex items-center">
+                      <Label htmlFor="text">Workflow B</Label>
+                    </div>
+                    <Textarea
+                      onChange={(e) =>
+                        setWorkflowB((prev) => ({
+                          ...prev,
+                          text: e.target.value,
+                        }))
+                      }
+                      className="w-[20vw] h-[30vh] resize-none"
+                      placeholder="Enter workflow here..."
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-          )}
+            <CardFooter>
+              <div className="flex w-full justify-center pt-7">
+                <Button
+                className="w-[44vw]"
+                  disabled={
+                    !workflowA.title ||
+                    !workflowB.title ||
+                    !workflowA.team ||
+                    //!workflowB.team ||
+                    !workflowA.text ||
+                    !workflowB.text ||
+                    !name
+                  }
+                  onClick={handleCompare}
+                >
+                  Compare Workflows
+                </Button>
+              </div>
+            </CardFooter>
+          </CardContent>
+        </Card>
+        <div className="w-20 h-6 flex items-center justify-center">
+          {loading ? (
+            <div className="flex space-x-12">
+              <div className="loader"></div>
+              <div className="loader"></div>
+            </div>
+          ) : null}
         </div>
+        <Card className="w-[26vw] h-[72.5vh]">
+          <CardHeader>
+            <CardTitle>AI Analysis</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className={`max-h-[27vw] ${result ? "overflow-y-auto" : ""}`}>
+              {error && <p className="text-red-500 mb-4">{error}</p>}
+              {result ? (
+                <div className="flex flex-col gap-6">
+                  <div className="grid gap-2">
+                    <Label htmlFor="date">
+                      <b>Date</b>
+                    </Label>
+                    {result.date}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="name">
+                      <b>Created By</b>
+                    </Label>
+                    {result.name}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="team">
+                      <b>Team</b>
+                    </Label>
+                    {result.team}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="summary">
+                      <b>High Level Comparison</b>
+                    </Label>
+                    {result.summary}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="keyDiff">
+                      <b>Key Differences</b>
+                    </Label>
+                    {result.keyDifferences}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="bottlenecks">
+                      <b>Bottlenecks</b>
+                    </Label>
+                    {result.bottlenecks}
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="recommendations">
+                      <b>Recommendations</b>
+                    </Label>
+                    {result.recommendations}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="automationIdea">
+                      <b>Automation Ideas</b>
+                    </Label>
+                    {result.automationIdeas}
+                  </div>
+                </div>
+              ) : (
+                <div className="w-full h-[60vh] bg-gray-100 rounded-xl">
+                  {loading ? (
+                    <div className="flex items-center justify-center h-full">
+                      <Spinner className="size-25" />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-full">
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia variant="icon">
+                            <IconFolderCode />
+                          </EmptyMedia>
+                          <EmptyTitle>No Result Yet</EmptyTitle>
+                          <EmptyDescription>
+                            You haven&apos;t created a comparison yet. Get
+                            started by creating it to the left.
+                          </EmptyDescription>
+                        </EmptyHeader>
+                      </Empty>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="flex-col gap-2 pt-5">
+              {result && (
+                <Button className="cursor-pointer w-full" onClick={handleSave}>
+                  Save
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

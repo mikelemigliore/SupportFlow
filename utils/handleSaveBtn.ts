@@ -11,11 +11,12 @@ type WorkflowProps = {
 async function handleSaveBtn(Data: {
   type: string;
   userId: string;
-  nameTicket?: string;
-  nameWorkflow?: string;
-  nameInsight?: string;
+  name?: string;
+  //nameTicket?: string;
+  //nameWorkflow?: string;
+  //nameInsight?: string;
   bottlenecks?: string;
-  highLevelComparison?: string;
+  //highLevelComparison?: string;
   keyDifferences?: string;
   recommendations?: string;
   date: string;
@@ -31,11 +32,11 @@ async function handleSaveBtn(Data: {
   workflowB?: WorkflowProps;
   automationIdeas?: string;
   recurringIssues?: string;
-  overallSummary?: string;
+  // overallSummary?: string;
   suggestedFaqs?: string;
 }) {
   //console.log("Saving ticket data:", ticketData);
-  if (Data.type === "ticket") {
+  if (Data.type === "Ticket") {
     try {
       const res = await fetch("/api/tickets", {
         method: "POST",
@@ -59,7 +60,7 @@ async function handleSaveBtn(Data: {
     }
   }
 
-  if (Data.type === "workflow") {
+  if (Data.type === "Workflow") {
     //console.log("Data", Data);
     try {
       const res = await fetch("/api/workflow", {
@@ -84,7 +85,7 @@ async function handleSaveBtn(Data: {
     }
   }
 
-  if (Data.type === "insight") {
+  if (Data.type === "Insight") {
     //console.log("Data", Data);
     try {
       const res = await fetch("/api/insight", {

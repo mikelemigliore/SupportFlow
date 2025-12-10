@@ -1,13 +1,5 @@
 "use client";
 import Link from "next/link";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { useEffect, useMemo, useState } from "react";
 import {
   Select,
@@ -18,98 +10,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-interface Ticket {
-  id: string;
-  userId: string;
-  date: string;
-  text: string;
-  source: string;
-  summary: string;
-  category: string;
-  priority: string;
-  team: string;
-  suggestedReply: string;
-  automationIdea: string;
-}
-
-const AITicketresults = [
-  {
-    id: 1,
-    date: "11/29/2025, 03:30 PM",
-    summary:
-      "The customer is unable to access their account due to forgetting their password.",
-    category: "Access",
-    priority: "high",
-    team: "Support",
-    suggestedReply:
-      "Please follow the password reset link to regain access to your account.",
-    automationIdea:
-      "Implement a self-service password reset feature on the login page.",
-  },
-  {
-    id: 2,
-    date: "11/29/2025, 04:10 PM",
-    summary:
-      "User reports that the system keeps logging them out unexpectedly.",
-    category: "Authentication",
-    priority: "medium",
-    team: "Engineering",
-    suggestedReply:
-      "We’re sorry for the trouble. Please try clearing your browser cache or switching devices while we investigate.",
-    automationIdea:
-      "Add automatic session monitoring to detect and resolve abnormal logout behavior.",
-  },
-  {
-    id: 3,
-    date: "11/29/2025, 01:05 PM",
-    summary:
-      "Customer states that their payment was charged twice for the same order.",
-    category: "Billing",
-    priority: "high",
-    team: "Billing",
-    suggestedReply:
-      "We apologize for the inconvenience. We will review the duplicate charge and issue a refund if applicable.",
-    automationIdea:
-      "Enable automated duplicate-payment detection to prevent double charges before processing.",
-  },
-  {
-    id: 4,
-    date: "11/29/2025, 11:45 AM",
-    summary:
-      "User cannot upload files larger than 10MB despite the limit being 25MB.",
-    category: "Features",
-    priority: "medium",
-    team: "Engineering",
-    suggestedReply:
-      "Thank you for reporting this. Our team is reviewing the file upload restriction and will update you shortly.",
-    automationIdea:
-      "Improve file-size validation to automatically adjust and warn the user instead of blocking uploads.",
-  },
-  {
-    id: 5,
-    date: "11/29/2025, 09:20 AM",
-    summary:
-      "The customer wants to upgrade their plan but is unsure which tier fits their needs.",
-    category: "Sales",
-    priority: "low",
-    team: "Sales",
-    suggestedReply:
-      "We’d be happy to help you choose the best plan. Could you share how many users and features you expect to use?",
-    automationIdea:
-      "Add an interactive plan-recommendation tool based on usage and customer responses.",
-  },
-];
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { IconFolderCode } from "@tabler/icons-react";
 
 type SortMode = "date_desc" | "date_asc" | "priority_desc" | "priority_asc";
 type SourceFilter = "all" | "customer" | "employee" | "system";
 
 function PastTicketsPage() {
-  //const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  //const [sort, setSort] = useState("");
-  //const [sortMode, setSortMode] = useState("date_desc");
   const [sortMode, setSortMode] = useState<SortMode>("date_desc");
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
   const [rawTickets, setRawTickets] = useState<any[]>([]);
@@ -166,78 +89,118 @@ function PastTicketsPage() {
         return sortMode === "priority_desc" ? pB - pA : pA - pB;
       }
 
-      // tie-break by date (newest first)
       return timeB - timeA;
     });
   }, [rawTickets, sortMode, sourceFilter]);
 
   return (
     <div>
-      {/* <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/tickets">Tickets Page</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Past Tickets</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb> */}
-      <h1>Past Tickets</h1>
-      <Select
-        value={sortMode}
-        onValueChange={(v) => setSortMode(v as SortMode)}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Sort" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Sort</SelectLabel>
-            <SelectItem value="date_desc">Newest first</SelectItem>
-            <SelectItem value="date_asc">Oldest first</SelectItem>
-            <SelectItem value="priority_desc">Priority: high → low</SelectItem>
-            <SelectItem value="priority_asc">Priority: low → high</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <Select
-        value={sourceFilter}
-        onValueChange={(v) => setSourceFilter(v as SourceFilter)}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Source" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All</SelectItem>
-          <SelectItem value="customer">Customer</SelectItem>
-          <SelectItem value="employee">Employee</SelectItem>
-          <SelectItem value="system">System</SelectItem>
-        </SelectContent>
-      </Select>
+      <div className="flex p-10 pb-[0vh] space-x-5">
+        <Select
+          value={sortMode}
+          onValueChange={(v) => setSortMode(v as SortMode)}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sort" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Sort</SelectLabel>
+              <SelectItem value="date_desc">Newest first</SelectItem>
+              <SelectItem value="date_asc">Oldest first</SelectItem>
+              <SelectItem value="priority_desc">
+                Priority: high → low
+              </SelectItem>
+              <SelectItem value="priority_asc">Priority: low → high</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Select
+          value={sourceFilter}
+          onValueChange={(v) => setSourceFilter(v as SourceFilter)}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Source" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="customer">Customer</SelectItem>
+            <SelectItem value="employee">Employee</SelectItem>
+            <SelectItem value="system">System</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <div>
         {!tickets || tickets.length === 0 ? (
-          <p> No past AI tickets results</p>
+          <div className="flex items-center justify-center h-full mt-[20vh]">
+            <Empty>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <IconFolderCode />
+                </EmptyMedia>
+                <EmptyTitle>Empty</EmptyTitle>
+                <EmptyDescription>
+                  You haven&apos;t created any ticket yet. Get started by
+                  creating a ticket.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          </div>
         ) : (
-          <div className="space-y-10">
+          <div className="space-y-8 p-10 space-x-5 grid grid-cols-3">
             {tickets.map((result) => (
-              <div className="border-5 border-blue-500" key={result.id}>
-                <p>{result.nameTicket}</p>
-                <p>{result.summary}</p>
-                <p>{result.category}</p>
-                <p>{result.priority}</p>
-                <p>{result.team}</p>
-                <p>{result.suggestedReply}</p>
-                <p>{result.automationIdea}</p>
-                <div>
-                  <Link href={`tickets/${result.id}`}>View</Link>
-                </div>
-              </div>
+              <Card className="relative w-[30vw] h-[29vh] py-0 gap-3">
+                <CardHeader></CardHeader>
+                <CardAction className=""></CardAction>
+                <CardContent className="space-y-3 grid grid-cols-2">
+                  <div className=" gap-2">
+                    <Label htmlFor="date">
+                      <b>Date</b>
+                    </Label>
+                    <p>{result.date}</p>
+                  </div>
+                  <div className=" gap-2">
+                    <Label htmlFor="name">
+                      <b>Name</b>
+                    </Label>
+                    <p>{result.name}</p>
+                  </div>
+                  <div className=" gap-2">
+                    <Label htmlFor="priority">
+                      <b>Priority</b>
+                    </Label>
+                    <p>{result.priority}</p>
+                  </div>
+                  <div className=" gap-2">
+                    <Label htmlFor="category">
+                      <b>Category</b>
+                    </Label>
+                    <p>{result.category}</p>
+                  </div>
+                  <div className="w-[12vw] gap-2">
+                    <Label htmlFor="summary">
+                      <b>Summary</b>
+                    </Label>
+                    <p>
+                      {result.summary.length > 110
+                        ? result.summary.slice(0, 110) + "..."
+                        : result.summary}
+                    </p>
+                  </div>
+                  <div className=" gap-2">
+                    <Label htmlFor="team">
+                      <b>Team</b>
+                    </Label>
+                    <p>{result.team}</p>
+                  </div>
+                  <div className="absolute bottom-4 right-10">
+                    <Button asChild className="cursor-pointer w-[7vw]">
+                      <Link href={`tickets/${result.id}`}>View</Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
