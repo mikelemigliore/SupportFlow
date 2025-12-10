@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
 
     // Verify password
     if (!user.password) {
-      // This user has no password (likely OAuth-only account)
       return NextResponse.json(
         { error: "Invalid email or password" },
         { status: 401 }

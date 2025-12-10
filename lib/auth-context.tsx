@@ -29,7 +29,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  //const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
     checkAuthStatus();
@@ -48,7 +47,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error("Auth check failed:", error);
     } finally {
       setIsLoading(false);
-      //setAuthLoading(false);
     }
   };
 
@@ -74,14 +72,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signUp = async (name: string, email: string, password: string) => {
-    //console.log("Step 5");
+
     try {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
-      //console.log("Step 6", response);
+
       const data = await response.json();
 
       if (response.ok) {
@@ -106,7 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const guestSignout = async () => {
     try {
       await fetch("/api/auth/guestSignout", { method: "POST" });
-      //setUser(null);
+
     } catch (error) {
       console.error("Signout failed:", error);
     }

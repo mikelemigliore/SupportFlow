@@ -1,6 +1,5 @@
 "use client";
 
-// import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -22,9 +21,6 @@ interface User {
   email: string;
 }
 
-// type ResetPasswordProps = {
-//   params: { token: string }; // ✅ no Promise here
-// };
 
 function ResetPassword() {
   const params = useParams<{ token: string }>();
@@ -37,9 +33,7 @@ function ResetPassword() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [confirmShowPassword, setConfirmShowPassword] = useState(false);
-  //const { data: session, status: sessionStatus } = useSession();
 
-  // ✅ Verify token on mount
   useEffect(() => {
     const verifyToken = async () => {
       try {
@@ -58,7 +52,7 @@ function ResetPassword() {
         }
 
         if (res.status === 200) {
-          const userData = await res.json(); // should contain at least { email }
+          const userData = await res.json(); 
           setUser(userData);
           setError("");
           setVerified(true);
@@ -109,8 +103,8 @@ function ResetPassword() {
         },
         body: JSON.stringify({
           password,
-          email: user?.email, // ✅ this will be returned by /api/verifytoken
-          token, // (optional) we can also send the token to double-check on backend
+          email: user?.email, 
+          token, 
         }),
       });
 

@@ -1,4 +1,4 @@
-// app/api/resetpassword/route.ts
+
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -17,8 +17,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Optional but recommended: check token again on backend
-    // so someone can't just post { email, newPassword } without the reset link.
     let user = null;
 
     if (token) {
@@ -32,12 +30,11 @@ export async function POST(req: NextRequest) {
           email,
           resetToken: hashedToken,
           resetTokenExpiry: {
-            gt: new Date(), // still valid
+            gt: new Date(), 
           },
         },
       });
     } else {
-      // fallback: if you really want to only trust the email
       user = await db.user.findUnique({
         where: { email },
       });

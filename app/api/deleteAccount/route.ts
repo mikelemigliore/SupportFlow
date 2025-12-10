@@ -18,7 +18,7 @@ async function getLoggedInUserId(req: NextRequest): Promise<string | null> {
     }
   }
 
-  // Otherwise, fall back to NextAuth
+  // Otherwise fall back to NextAuth
   const session = await auth();
 
   if (session?.user?.email) {

@@ -1,8 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import {
   Card,
@@ -48,11 +47,6 @@ type Ticket = { createdAt: string /* ... */ };
 type Workflow = { createdAt: string /* ... */ };
 type Insight = { createdAt: string /* ... */ };
 
-type ActivityData = {
-  tickets: Ticket[];
-  workflows: Workflow[];
-  insights: Insight[];
-};
 
 type ChartAreaInteractiveProps = {
   filteredData: ChartData[];
@@ -60,7 +54,6 @@ type ChartAreaInteractiveProps = {
   setTimeRange: (value: string) => void;
 };
 
-//{ activity }: { activity: ActivityData }
 export function ChartAreaInteractive({
   filteredData,
   timeRange,

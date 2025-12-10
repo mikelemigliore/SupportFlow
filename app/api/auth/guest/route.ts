@@ -1,8 +1,7 @@
-// app/api/auth/guest/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { generateSessionToken } from "@/lib/auth";
-import { cookies } from "next/headers";
 
 const GUEST_EMAIL = "guest@cinepiks.com";
 
@@ -40,7 +39,6 @@ export async function POST(req: NextRequest) {
           id: user.id,
           name: user.name,
           email: user.email,
-          //isGuest: true,
         },
       },
       { status: 200 }

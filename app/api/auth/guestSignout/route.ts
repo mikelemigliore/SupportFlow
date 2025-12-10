@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 
 export async function POST(request: NextRequest) {
   try {
-    //const cookieStore = await cookies();
     const token = request.cookies.get("session-token")?.value;
 
     if (token) {
@@ -20,8 +19,8 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 0,        // expire immediately
-      path: "/",                 // important
+      maxAge: 0,        
+      path: "/",                 
     });
 
     return res;

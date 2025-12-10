@@ -1,4 +1,4 @@
-// Add this import at the top
+
 "use client";
 
 import * as React from "react";
@@ -7,11 +7,10 @@ import SideBar from "@/components/sidebar";
 import { SectionCards } from "@/components/sectionCard";
 import { ChartAreaInteractive } from "@/components/chart-area-interactive";
 import { DataTable } from "@/components/data-table";
-import { ColumnDef } from "@tanstack/react-table";
 
-type Ticket = { createdAt: string /* ... */ };
-type Workflow = { createdAt: string /* ... */ };
-type Insight = { createdAt: string /* ... */ };
+type Ticket = { createdAt: string  };
+type Workflow = { createdAt: string };
+type Insight = { createdAt: string };
 
 type ActivityData = {
   tickets: Ticket[];
@@ -19,10 +18,7 @@ type ActivityData = {
   insights: Insight[];
 };
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
+
 
 type ChartData = {
   date: string;
@@ -74,7 +70,6 @@ function DashboardPage() {
 
         const limited = sorted.slice(0, 20);
 
-        //console.log("Limited", limited);
 
         setCollective(limited);
 
@@ -104,8 +99,7 @@ function DashboardPage() {
   }, [activity]);
 
   function normalizeTimestampToDay(timestamp: string) {
-    //console.log("timestamp", timestamp);
-    return new Date(timestamp).toISOString().split("T")[0]; // YYYY-MM-DD
+    return new Date(timestamp).toISOString().split("T")[0]; 
   }
 
   function buildChartData(activity: ActivityData) {
@@ -141,7 +135,6 @@ function DashboardPage() {
     }
     const startDate = new Date(referenceDate);
     startDate.setDate(startDate.getDate() - daysToSubtract);
-    //console.log("date >= startDate",date >= startDate)
     return date >= startDate;
   });
 
@@ -159,7 +152,7 @@ function DashboardPage() {
               filteredData={filteredData}
               timeRange={timeRange}
               setTimeRange={setTimeRange}
-            />{" "}
+            />
           </div>
           <div className="px-4 lg:px-6">
             <h1 className="font-semibold p-2">History</h1>

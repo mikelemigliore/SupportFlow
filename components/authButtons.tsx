@@ -1,8 +1,5 @@
 "use client";
 
-//import Image from "next/image";
-// import googleLogo from "@/public/google.png";
-// import githubLogo from "@/public/github.png";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { FaGoogle } from "react-icons/fa";
@@ -11,7 +8,6 @@ import { FaGithub } from "react-icons/fa";
 export function GoogleSignInButton() {
   const handleClick = () => {
     signIn("google", { callbackUrl: "/dashboard" });
-    //window.location.href = "/dashboard";
   };
 
   return (

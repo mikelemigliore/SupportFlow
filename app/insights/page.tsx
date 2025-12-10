@@ -11,9 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import * as React from "react";
 import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState, useEffect } from "react";
@@ -24,7 +21,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -40,9 +36,7 @@ import { IconFolderCode } from "@tabler/icons-react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -62,9 +56,6 @@ function InsightsPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // const [selectedTicketData, setSelectedTicketData] = useState<
-  //   TicketForInsight[]
-  // >([]);
   const [selectedTickets, setSelectedTickets] = useState<number[]>([]);
   const [specificTickets, setSpecificTickets] = useState({
     priority: "",
@@ -78,7 +69,6 @@ function InsightsPage() {
   const [nameSpecific, setNameSpecific] = useState("");
 
   useEffect(() => {
-    //console.log("Fetching tickets...");
     async function fetchTickets() {
       try {
         const res = await fetch("/api/tickets", { method: "GET" });
@@ -89,7 +79,6 @@ function InsightsPage() {
         }
 
         const data = await res.json();
-        //console.log("Data", data);
         setTickets(data.tickets);
       } catch (err: any) {
         setError(err.message);
@@ -124,13 +113,11 @@ function InsightsPage() {
       const data = await response.json();
       console.log("Data Insight", data);
       setResult(data);
-      //console.log("AI Result checkbox:", data);
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
-    // console.log("Selected tickets:", selectedTickets);
   };
 
   const handleAIInsightSpecific = async (
@@ -155,29 +142,22 @@ function InsightsPage() {
 
       const data = await response.json();
       setResult(data);
-      //console.log("AI Result specific:", data);
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
-    // console.log("Selected tickets:", selectedTickets);
   };
 
   const handleCheckboxList = async () => {
-    //Study better
     const selectedTicketData = tickets.filter((ticket) =>
       selectedTickets.includes(ticket.id)
     );
-    //console.log("Selected Ticket Data Checkbox:", selectedTicketData);
-
-    // setLoading(true);
 
     handleAIInsightCheckbox(selectedTicketData);
   };
 
   const handleSpecificList = () => {
-    // Study better this filtering
     const results = tickets
       .filter((ticket) => {
         return (
@@ -188,11 +168,8 @@ function InsightsPage() {
       })
       .slice(0, Number(specificTickets.quantity) || tickets.length);
 
-    //console.log("Selected Ticket Data Specific:", results);
-
     handleAIInsightSpecific(results);
 
-    //console.log("Filtered tickets:", results);
   };
 
   const handleSave = async () => {
@@ -201,7 +178,6 @@ function InsightsPage() {
       setSaveStatus("You must be logged in to save a insight.");
       return;
     }
-    //console.log("Result:", result);
     try {
       await handleSaveBtn({
         type: "Insight",

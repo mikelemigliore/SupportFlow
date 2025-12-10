@@ -4,10 +4,10 @@ async function handleDeleteTicketBtn(Data: {
   id: string;
   userId: string;
 }) {
-  //console.log("Saving ticket data:", ticketData);
+
   if (Data.type === "ticket") {
     try {
-      //console.log("ticketData", ticketData)
+
       const res = await fetch("/api/tickets", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
@@ -32,7 +32,7 @@ async function handleDeleteTicketBtn(Data: {
 
   if (Data.type === "workflow") {
     try {
-      //console.log("ticketData", ticketData)
+
       const res = await fetch("/api/workflow", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
@@ -58,7 +58,7 @@ async function handleDeleteTicketBtn(Data: {
 
     if (Data.type === "insight") {
     try {
-      //console.log("ticketData", ticketData)
+
       const res = await fetch("/api/insight", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },

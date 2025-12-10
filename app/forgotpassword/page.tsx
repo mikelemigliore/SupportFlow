@@ -2,31 +2,22 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import {
   Field,
-  FieldContent,
-  FieldDescription,
-  FieldError,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
-  FieldTitle,
 } from "@/components/ui/field";
 
 function ForgotPassword() {
@@ -38,9 +29,9 @@ function ForgotPassword() {
     if (isLoading) {
       const timer = setTimeout(() => {
         router.push("/");
-      }, 2000); // 2 second delay
+      }, 2000); 
 
-      return () => clearTimeout(timer); // cleanup
+      return () => clearTimeout(timer); 
     }
     setIsLoading(false);
   }, [isLoading]);
@@ -61,7 +52,6 @@ function ForgotPassword() {
     }
 
     try {
-      //router.push("/");
       const res = await fetch("/api/forgotpassword", {
         method: "POST",
         headers: {
@@ -144,7 +134,6 @@ function ForgotPassword() {
       </div>
     </div>
   );
-  //   );
 }
 
 export default ForgotPassword;

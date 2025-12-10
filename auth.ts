@@ -1,4 +1,4 @@
-// auth.ts
+
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: {
-    strategy: "jwt", // default, but let's be explicit
+    strategy: "jwt", 
   },
   providers: [
     Google({
@@ -21,8 +21,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     // On sign-in, create or update user in DB
     async signIn({ profile }) {
-      // profile shape depends a bit on provider, but for Google/GitHub
-      // it will have `email`, `name`, etc.
       if (!profile?.email) {
         throw new Error('No profile')
       }

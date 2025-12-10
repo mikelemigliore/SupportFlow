@@ -38,7 +38,6 @@ function PastTicketsPage() {
   const [rawTickets, setRawTickets] = useState<any[]>([]);
 
   useEffect(() => {
-    //console.log("Fetching tickets...");
     async function fetchTickets() {
       try {
         const res = await fetch(`/api/tickets`, {
@@ -51,9 +50,6 @@ function PastTicketsPage() {
         }
 
         const data = await res.json();
-        //console.log("Data", data);
-        //const sortData = handleSort(data.tickets);
-        //console.log("Data", data);
         setRawTickets(data.tickets);
       } catch (err: any) {
         setError(err.message);
@@ -68,13 +64,13 @@ function PastTicketsPage() {
   const priorityOrder = { high: 3, medium: 2, low: 1 } as const;
 
   const tickets = useMemo(() => {
-    // 1) filter by source
+    // 1 filter by source
     const filtered = rawTickets.filter((t) => {
       if (sourceFilter === "all") return true;
       return t.source === sourceFilter;
     });
 
-    // 2) sort
+    // 2 sort
     return [...filtered].sort((a, b) => {
       const timeA = new Date(a.createdAt).getTime();
       const timeB = new Date(b.createdAt).getTime();

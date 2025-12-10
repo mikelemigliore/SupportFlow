@@ -4,7 +4,6 @@ import type React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -12,10 +11,8 @@ import { useAuth } from "@/lib/auth-context";
 
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -25,15 +22,9 @@ import {
 } from "@/components/authButtons";
 import {
   Field,
-  FieldContent,
-  FieldDescription,
-  FieldError,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
   FieldSeparator,
-  FieldSet,
-  FieldTitle,
 } from "@/components/ui/field";
 import Link from "next/link";
 
@@ -46,18 +37,14 @@ export function SignInForm() {
   const { signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log("It's working 1");
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
     const result = await signIn(email, password);
-    console.log("It's working 2");
 
     if (result.success) {
-      console.log("It's working 3");
       window.location.href = "/dashboard";
-      //router.push("/dashboard")
     } else {
       setError(result.error || "An error occurred. Please try again.");
     }
@@ -67,8 +54,6 @@ export function SignInForm() {
 
   const handleContinueAsGuest = async () => {
     const res = await fetch("/api/auth/guest", { method: "POST" });
-    //const data = await res.json();
-
     if (!res.ok) {
       console.log("Error");
       return;

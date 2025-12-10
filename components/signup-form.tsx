@@ -4,31 +4,21 @@ import type React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import {
   Field,
-  FieldContent,
-  FieldDescription,
-  FieldError,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
-  FieldTitle,
 } from "@/components/ui/field";
 import Link from "next/link";
 
@@ -43,7 +33,7 @@ export function SignUpForm() {
   const { signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log("Step 1");
+
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -54,7 +44,6 @@ export function SignUpForm() {
       return;
     }
 
-    console.log("Step 2");
 
     if (password.length < 6) {
       setError("Password must be at least 6 characters");
@@ -62,10 +51,8 @@ export function SignUpForm() {
       return;
     }
 
-    console.log("Step 3");
     const result = await signUp(name, email, password);
 
-    console.log("Step 4", result);
 
     if (result.success) {
       router.push("/");

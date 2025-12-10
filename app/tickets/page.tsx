@@ -54,7 +54,6 @@ function TicketsPage() {
   const [text, setText] = useState("");
   const [name, setName] = useState("");
   const [source, setSource] = useState("");
-  //   const [priority, setPriority] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -63,7 +62,6 @@ function TicketsPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
 
   useEffect(() => {
-    //console.log("Fetching tickets...");
     async function fetchTickets() {
       try {
         const res = await fetch("/api/tickets", { method: "GET" });
@@ -74,7 +72,6 @@ function TicketsPage() {
         }
 
         const data = await res.json();
-        //console.log("Data", data);
         setTickets(data.tickets);
       } catch (err: any) {
         setError(err.message);
@@ -86,9 +83,6 @@ function TicketsPage() {
     fetchTickets();
   }, []);
 
-  function truncate(text: string, maxLength: number): string {
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  }
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -111,7 +105,6 @@ function TicketsPage() {
 
       const data = await response.json();
       setResult(data);
-      //console.log("AI Result:", data);
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
@@ -120,14 +113,11 @@ function TicketsPage() {
   };
 
   const handleSave = async () => {
-    //console.log("Result:", result);
     if (!result) return;
     if (!user) {
       setSaveStatus("You must be logged in to save a ticket.");
       return;
     }
-    //console.log("ticket:", result);
-    //if (user && !user.id) {
     try {
       await handleSaveBtn({
         type: "Ticket",
@@ -150,7 +140,6 @@ function TicketsPage() {
     } catch (err: any) {
       setSaveStatus(err?.message || "Failed to save ticket.");
     }
-    // }
   };
 
   return (

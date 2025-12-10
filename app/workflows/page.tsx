@@ -209,12 +209,9 @@ function WorkflowsPage() {
     } finally {
       setLoading(false);
     }
-    // console.log("Compare A:", workflowA);
-    // console.log("Compare B:", workflowB);
   };
 
   const handleSave = async () => {
-    //console.log("Result:", result);
     if (!result) return;
     if (!user) {
       setSaveStatus("You must be logged in to save a workflow.");
@@ -306,7 +303,7 @@ function WorkflowsPage() {
                             setWorkflowA((prev) => ({
                               ...prev,
                               workflowType: value,
-                            })) //Study better
+                            })) 
                         }
                         value={workflowA.workflowType}
                       >
@@ -330,7 +327,7 @@ function WorkflowsPage() {
                       <Select
                         onValueChange={
                           (value) =>
-                            setWorkflowA((prev) => ({ ...prev, system: value })) //Study better
+                            setWorkflowA((prev) => ({ ...prev, system: value })) 
                         }
                         value={workflowA.system}
                       >
@@ -367,7 +364,7 @@ function WorkflowsPage() {
                           setWorkflowA((prev) => ({
                             ...prev,
                             title: e.target.value,
-                          })) //Study better
+                          })) 
                       }
                     />
                   </div>
@@ -399,7 +396,7 @@ function WorkflowsPage() {
                           setWorkflowB((prev) => ({
                             ...prev,
                             title: e.target.value,
-                          })) //Study better
+                          })) 
                       }
                     />
                   </div>
@@ -429,7 +426,6 @@ function WorkflowsPage() {
                     !workflowA.title ||
                     !workflowB.title ||
                     !workflowA.team ||
-                    //!workflowB.team ||
                     !workflowA.text ||
                     !workflowB.text ||
                     !name

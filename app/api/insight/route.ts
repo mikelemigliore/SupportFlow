@@ -1,11 +1,11 @@
-// app/api/workglow/route.ts
+
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
 
-// Helper to get logged-in userId from NextAuth OR custom session-token
+// Helper to get logged-in userId from NextAuth or custom session-token
 async function getLoggedInUserId(req: NextRequest): Promise<string | null> {
   // Prefer custom session-token if it exists
   const sessionToken = req.cookies.get("session-token")?.value;
@@ -20,7 +20,6 @@ async function getLoggedInUserId(req: NextRequest): Promise<string | null> {
     }
   }
 
-  // Otherwise, fall back to NextAuth
   const session = await auth();
 
   if (session?.user?.email) {
@@ -33,7 +32,6 @@ async function getLoggedInUserId(req: NextRequest): Promise<string | null> {
   return null;
 }
 
-/* POST /api/tickets create a ticket for the logged-in user */
 export async function POST(req: NextRequest) {
   try {
     const userId = await getLoggedInUserId(req);
@@ -54,7 +52,6 @@ export async function POST(req: NextRequest) {
       name
     } = body;
 
-    // Note: we NO LONGER accept userId from the client
     if (
       !type ||
       !date ||
@@ -73,7 +70,7 @@ export async function POST(req: NextRequest) {
     const insights = await db.insights.create({
       data: {
         type,
-        userId, // from session
+        userId, 
         date,
         name,
         summary,
@@ -94,7 +91,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-/* GET /api/tickets fetch tickets for the logged-in user */
 export async function GET(req: NextRequest) {
   try {
     const userId = await getLoggedInUserId(req);
@@ -120,7 +116,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// /* DELETE /api/tickets delete a ticket belonging to the logged-in user */
 export async function DELETE(req: NextRequest) {
   try {
     const userId = await getLoggedInUserId(req);

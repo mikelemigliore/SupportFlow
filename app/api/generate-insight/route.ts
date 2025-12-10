@@ -1,4 +1,4 @@
-// app/api/analyze-ticket/route.ts
+
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
@@ -111,7 +111,6 @@ Return ONLY valid JSON. Do not include any explanations or extra text.
       suggestedFaqs: toBulletString(parsed.suggestedFaqs),
     };
 
-    //console.log("result", result)
 
     return NextResponse.json(result);
   } catch (err) {

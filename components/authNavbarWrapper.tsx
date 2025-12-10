@@ -1,4 +1,4 @@
-// components/AuthNavbarWrapper.tsx
+
 "use client";
 
 import { usePathname } from "next/navigation";
@@ -14,7 +14,7 @@ export default function AuthNavbarWrapper() {
     hideOnRoutes.includes(pathname) || pathname.startsWith("/resetpassword");
 
   if (shouldHide) {
-    return null; // no navbar at all
+    return null;
   }
 
   return (

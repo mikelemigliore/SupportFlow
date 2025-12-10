@@ -1,6 +1,5 @@
 "use client";
 
-import { BadgeCheck, Bell, CreditCard, LogOut, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -28,7 +26,7 @@ import { Label } from "@/components/ui/label";
 import { TbDotsVertical } from "react-icons/tb";
 import { MdDelete } from "react-icons/md";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import handleDeleteAccountBtn from "@/utils/handleDeleteAccountBtn";
 import { signOut as nextAuthSignOut } from "next-auth/react";
 import { useRouter } from "next/navigation";

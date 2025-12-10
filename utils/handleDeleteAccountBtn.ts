@@ -1,7 +1,7 @@
 
 async function handleDeleteAccountBtn({ user }: { user: string }) {
     try {
-      //console.log("ticketData", ticketData)
+
       const res = await fetch("/api/deleteAccount", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },

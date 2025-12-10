@@ -1,4 +1,4 @@
-// app/api/tickets/route.ts
+
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -20,7 +20,6 @@ async function getLoggedInUserId(req: NextRequest): Promise<string | null> {
     }
   }
 
-  // Otherwise, fall back to NextAuth
   const session = await auth();
 
   if (session?.user?.email) {
@@ -33,7 +32,6 @@ async function getLoggedInUserId(req: NextRequest): Promise<string | null> {
   return null;
 }
 
-/* POST /api/tickets create a ticket for the logged-in user */
 export async function POST(req: NextRequest) {
   try {
     const userId = await getLoggedInUserId(req);
@@ -44,7 +42,6 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
-    //console.log("Received ticket data:", body);
 
     const {
       type,
@@ -60,7 +57,6 @@ export async function POST(req: NextRequest) {
       name,
     } = body;
 
-    // Note: we NO LONGER accept userId from the client
     if (
       !type ||
       !date ||
@@ -83,7 +79,7 @@ export async function POST(req: NextRequest) {
     const ticket = await db.tickets.create({
       data: {
         type,
-        userId, // taken from session, not from the body
+        userId, 
         date,
         text,
         source,
@@ -107,7 +103,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-/* GET /api/tickets fetch tickets for the logged-in user */
 export async function GET(req: NextRequest) {
   try {
     const userId = await getLoggedInUserId(req);
@@ -131,7 +126,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-/* DELETE /api/tickets delete a ticket belonging to the logged-in user */
 export async function DELETE(req: NextRequest) {
   try {
     const userId = await getLoggedInUserId(req);
@@ -141,7 +135,6 @@ export async function DELETE(req: NextRequest) {
     }
 
     const { id } = await req.json();
-    //console.log("id", id);
 
     if (!id) {
       return NextResponse.json(

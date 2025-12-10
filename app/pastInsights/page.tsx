@@ -27,40 +27,26 @@ import {
 import { IconFolderCode } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 
-interface InsightsProps {
-  id: string;
-  date: string;
-  overallSummary: string;
-  recurringIssues: string;
-  automationIdeas: string;
-  suggestedFaqs: string;
-  createdAt: Date;
-  userId: string;
-}
+
 
 type SortMode = "date_desc" | "date_asc" | "priority_desc" | "priority_asc";
 
 function PastInsightsPage() {
-  //const [insights, setInsights] = useState<InsightsProps[]>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [sortMode, setSortMode] = useState<SortMode>("date_desc");
   const [rawInsights, setRawInsights] = useState<any[]>([]);
 
   useEffect(() => {
-    //console.log("Fetching workflow...");
     async function fetchInsights() {
       try {
         const res = await fetch("/api/insight", { method: "GET" });
-        //console.log("res", res);
         if (!res.ok) {
           const data = await res.json();
-          //console.log("Data", data);
           throw new Error(data.error || "Failed to load insight");
         }
 
         const data = await res.json();
-        //console.log("Data", data);
         setRawInsights(data.insight);
       } catch (err: any) {
         setError(err.message);
@@ -73,7 +59,7 @@ function PastInsightsPage() {
   }, []);
 
   const insights = useMemo(() => {
-    // 2) sort
+    // 2 sort
     return rawInsights.sort((a, b) => {
       const timeA = new Date(a.createdAt).getTime();
       const timeB = new Date(b.createdAt).getTime();
@@ -81,7 +67,7 @@ function PastInsightsPage() {
       if (sortMode === "date_desc") return timeB - timeA;
       if (sortMode === "date_asc") return timeA - timeB;
 
-      // tie-break by date (newest first)
+      // tie-break by date
       return timeB - timeA;
     });
   }, [rawInsights, sortMode]);
@@ -153,7 +139,7 @@ function PastInsightsPage() {
                   </div>
                   <div className="absolute bottom-4 right-10">
                     <Button asChild className="cursor-pointer w-[7vw]">
-                      <Link href={`insight/${result.id}`}>View</Link>
+                      <Link href={`insights/${result.id}`}>View</Link>
                     </Button>
                   </div>
                 </CardContent>

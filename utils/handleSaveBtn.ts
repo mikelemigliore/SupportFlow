@@ -1,4 +1,3 @@
-import { useState } from "react";
 
 type WorkflowProps = {
   title: string;
@@ -12,11 +11,7 @@ async function handleSaveBtn(Data: {
   type: string;
   userId: string;
   name?: string;
-  //nameTicket?: string;
-  //nameWorkflow?: string;
-  //nameInsight?: string;
   bottlenecks?: string;
-  //highLevelComparison?: string;
   keyDifferences?: string;
   recommendations?: string;
   date: string;
@@ -32,10 +27,9 @@ async function handleSaveBtn(Data: {
   workflowB?: WorkflowProps;
   automationIdeas?: string;
   recurringIssues?: string;
-  // overallSummary?: string;
   suggestedFaqs?: string;
 }) {
-  //console.log("Saving ticket data:", ticketData);
+
   if (Data.type === "Ticket") {
     try {
       const res = await fetch("/api/tickets", {
@@ -61,7 +55,6 @@ async function handleSaveBtn(Data: {
   }
 
   if (Data.type === "Workflow") {
-    //console.log("Data", Data);
     try {
       const res = await fetch("/api/workflow", {
         method: "POST",
@@ -86,7 +79,6 @@ async function handleSaveBtn(Data: {
   }
 
   if (Data.type === "Insight") {
-    //console.log("Data", Data);
     try {
       const res = await fetch("/api/insight", {
         method: "POST",
@@ -99,9 +91,7 @@ async function handleSaveBtn(Data: {
       if (!res.ok) {
         throw new Error(data.error || "Failed to save insight");
       }
-      //console.log("Allright", Data);
       return { success: true };
-      //return { success: true, insight: data.insight };
     } catch (err: any) {
       console.error("Save insight failed:", err);
       return {

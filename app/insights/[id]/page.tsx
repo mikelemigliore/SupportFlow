@@ -67,15 +67,14 @@ function InsightDetailPage() {
     if (deleted) {
       const timer = setTimeout(() => {
         router.push("/pastInsights");
-      }, 2000); // 2 second delay
+      }, 2000); 
 
-      return () => clearTimeout(timer); // cleanup
+      return () => clearTimeout(timer); 
     }
     setDeleted(false);
   }, [deleted]);
 
   const handleDeleteTicket = async () => {
-    //console.log("Result:", ticket);
     if (!insight) return;
 
     try {
@@ -87,7 +86,6 @@ function InsightDetailPage() {
       setDeleted(true);
       toast("Insight Deleted Successfully");
 
-      // router.push("/pastTickets");
     } catch (err: any) {
       console.error(err?.message || "Failed to save insight.");
     }
@@ -95,7 +93,7 @@ function InsightDetailPage() {
 
   return (
     <div className="flex justify-center items-center py-20">
-      <Card className=" relative w-[60vw] h-[62vh] overflow-y-auto">
+      <Card className=" relative w-[60vw] h-[52vh] overflow-y-auto">
         {deleted ? (
           ""
         ) : (

@@ -1,17 +1,15 @@
 "use client";
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react";
+import { IconTrendingUp } from "@tabler/icons-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type SectionCardProps = {
   lenghtTickets: number;

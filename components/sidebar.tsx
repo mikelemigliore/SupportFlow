@@ -14,8 +14,6 @@ import {
   SidebarProvider,
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
@@ -24,7 +22,6 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import NavBar from "@/components/navBar";
 import { NavUser } from "@/components/NavUser";
 
 function SideBar() {
@@ -157,21 +154,6 @@ function SideBar() {
           <SidebarContent></SidebarContent>
           <SidebarFooter>
             <NavUser userName={user?.name} userEmail={user?.email} />
-            {/* <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user?.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
-                  {user?.email}
-                </span>
-              </div>
-            </div> */}
             <Button
               className="cursor-pointer"
               variant="outline"

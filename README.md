@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI/SupportFlow360 — AI-Powered Operations Intelligence
 
-## Getting Started
+### Link
+https://supportflow360.com
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+AI/SupportFlow360 is an AI-powered operational assistant designed to help teams make better decisions using their existing support data. By analyzing tickets, workflows, and operational patterns, AI/SupportFlow360 provides actionable recommendations to reduce bottlenecks, automate manual work, and improve overall efficiency across organizations.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Screenshots  
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Dashboard:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Create Ticket:
+
+
+
+
+View Page:
+
+
+
+
+Single Page:
+
+
+
+
+Workflow Page:
+
+
+
+
+Insight Page:
+
+
+
+
+---
+
+## Features
+
+### Ticket Analysis
+- Use AI to analyze support tickets.
+- Detect patterns, bottlenecks, sentiment tone, and recurring issues.
+- Receive recommendations, automation suggestions, and next steps.
+- Responses can be saved for future reference.
+
+---
+
+### Workflow Comparison
+- Compare similar workflows or processes side by side.
+- AI highlights inefficiencies, similarities, friction points, and optimizations.
+- Save generated comparisons to track improvements over time.
+
+---
+
+### Insights Across Multiple Tickets
+- Select multiple tickets to generate high-level insight reports.
+- Identify themes, recurring customer pain points, and automation ideas.
+- Save reports for future organizational strategy reviews.
+
+---
+
+### Saved Analysis Library
+- All generated AI responses (ticket analysis, workflow comparisons, insights) can be saved.
+- Search, filter, sort, view, and delete saved items.
+- Creates a centralized knowledge base for operational intelligence.
+
+---
+
+### Dashboard & Activity Tracking
+- View analytics such as:
+  - Number of tickets analyzed
+  - Workflow comparisons generated
+  - Insight reports created
+- Includes trends graph and history table for auditing and review.
+
+---
+
+## Tech Stack
+
+### Frontend
+- Next.js  
+- React  
+- Tailwind CSS  
+- ShadCN/UI
+
+### Backend & Database
+- PostgreSQL  
+- Prisma ORM  
+- NextAuth (Authentication)  
+- OpenAI API  
+
+### Deployment & Infrastructure
+- AWS 
+- Squarespace (Custom Domain)
+
+---
+
+## Project Goals
+
+AI/SupportFlow360 is built to empower teams and organizations to use Artificial Intelligence to:
+
+- Reduce manual investigation time.
+- Improve workflows and decision-making using real insights.
+- Identify automation opportunities based on actual support activity.
+- Transform raw support data into structured, actionable intelligence.
+
+---
+
+

@@ -92,7 +92,6 @@ function ComparisonDetailPage() {
     if (!workflow) return;
 
     try {
-      //console.log("Workflow", workflow);
       await handleDeleteTicketBtn({
         type: "workflow",
         id: workflow.id,

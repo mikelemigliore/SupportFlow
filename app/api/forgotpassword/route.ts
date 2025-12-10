@@ -1,4 +1,4 @@
-// app/api/forgotpassword/route.ts
+
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -12,7 +12,6 @@ const mailerSend = new MailerSend({
 
 export async function POST(req: NextRequest) {
   try {
-    //const email = "mikelemigliore@hotmail.com";
     const { email } = await req.json();
 
     if (!email) {
@@ -30,7 +29,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1) Generate token (raw for URL, hashed for DB)
+    // 1 Generate token 
     const rawToken = crypto.randomBytes(32).toString("hex");
     const hashedToken = crypto
       .createHash("sha256")
@@ -39,7 +38,7 @@ export async function POST(req: NextRequest) {
 
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
-    // 2) Save to DB (uncomment when ready)
+    // 2 Save to DB 
     await db.user.update({
       where: { id: existingUser.id },
       data: {
@@ -48,12 +47,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 3) Build reset URL
+    // 3 Build reset URL
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
     const resetUrl = `${baseUrl}/resetpassword/${rawToken}`;
 
-    // 4) Prepare email content
-    const fromEmail = "no-reply@supportflow360.com"; // MUST be from your verified MailerSend domain
+    // 4 Prepare email content
+    const fromEmail = "no-reply@supportflow360.com"; 
     const fromName = "Support Flow";
 
     const htmlBody = `
@@ -78,7 +77,7 @@ If you did not request this, you can ignore this email.
 – Support Flow
 `.trim();
 
-    // 5) Build MailerSend params
+    // 5 Build MailerSend params
     const sentFrom = new Sender(fromEmail, fromName);
     const recipients = [new Recipient(email, "Support Flow user")];
 
@@ -89,9 +88,8 @@ If you did not request this, you can ignore this email.
       .setHtml(htmlBody)
       .setText(textBody);
 
-    // 6) Send with MailerSend
+    // 6 Send with MailerSend
     const response = await mailerSend.email.send(emailParams);
-    //console.log("MailerSend send result:", response);
 
     return NextResponse.json(
       { message: "Password reset email sent" },

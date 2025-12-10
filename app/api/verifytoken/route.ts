@@ -1,4 +1,4 @@
-// app/api/verifytoken/route.ts
+
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -15,12 +15,12 @@ export async function POST(req: NextRequest) {
 
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
-    // Look for a user whose token matches AND has not expired
+    // Look for a user whose token matches and has not expired
     const user = await db.user.findFirst({
       where: {
         resetToken: hashedToken,
         resetTokenExpiry: {
-          gt: new Date(), // expiry time is in the future
+          gt: new Date(), 
         },
       },
     });

@@ -1,4 +1,4 @@
-// app/api/analyze-ticket/route.ts
+
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
@@ -6,7 +6,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Types for your structured output
 type Priority = "low" | "medium" | "high";
 type Team =
   | "Support"
@@ -23,7 +22,6 @@ function normalizePriority(value: unknown): Priority {
   if (v === "low") return "low";
   if (v === "medium" || v === "med") return "medium";
 
-  // Anything else ("high", "critical", "urgent", "p1", etc.) -> high
   return "high";
 }
 
