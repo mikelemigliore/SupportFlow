@@ -37,7 +37,7 @@ Single Page:
 
 
 Workflow Page:
-<img  height="300" alt="Screenshot 2025-12-10 114041" src="https://github.com/user-attachments/assets/0efe6bdd-5f91-4eee-ba67-2fa17561bc9d" />
+<img height="300" alt="Screenshot 2025-12-10 114041" src="https://github.com/user-attachments/assets/0efe6bdd-5f91-4eee-ba67-2fa17561bc9d" />
 
 
 Insight Page:
