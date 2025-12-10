@@ -18,7 +18,7 @@ export default function AuthNavbarWrapper() {
   }
 
   return (
-    <div className={isDashboard ? "ml-64" : ""}>
+    <div className={isDashboard ? "md:ml-64" : ""}>
       <NavBar />
     </div>
   );

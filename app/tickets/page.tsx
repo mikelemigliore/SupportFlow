@@ -143,13 +143,13 @@ function TicketsPage() {
   };
 
   return (
-    <div className="w-full relative flex justify-center space-x-35 h-[90vh] items-center">
-      <div className="absolute top-4 left-4">
+    <div className="w-full relative md:flex justify-center md:space-x-35 space-y-12 h-[90vh] items-center">
+      <div className="absolute md:top-4 md:left-4 top-[-5.5vh] left-4">
         <Button size="sm" asChild>
           <Link href="/pastTickets">View Past Tickets</Link>
         </Button>
       </div>
-      <Card className="w-full max-w-lg h-[72vh]">
+      <Card className="w-full max-w-lg md:h-[72vh] mt-15">
         <CardHeader>
           <CardTitle>New AI Ticket Analisys</CardTitle>
           <CardDescription>
@@ -171,7 +171,7 @@ function TicketsPage() {
                 <Label htmlFor="soucre">Source</Label>
               </div>
               <Select onValueChange={setSource}>
-                <SelectTrigger className="w-[10vw]">
+                <SelectTrigger className="md:w-[10vw]">
                   <SelectValue placeholder="Select a source" />
                 </SelectTrigger>
                 <SelectContent>
@@ -189,7 +189,7 @@ function TicketsPage() {
                 <Label htmlFor="text">Ticket Info</Label>
               </div>
               <Textarea
-                className="w-[24vw] h-[32vh] resize-none"
+                className="md:w-[24vw] h-[32vh] resize-none"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Enter ticket main text here..."
@@ -207,7 +207,7 @@ function TicketsPage() {
           </Button>
         </CardFooter>
       </Card>
-      <div className="w-20 h-6 flex items-center justify-center">
+      <div className="md:w-20 h-6 flex items-center justify-center">
         {loading ? (
           <div className="flex space-x-12">
             <div className="loader"></div>
@@ -220,7 +220,7 @@ function TicketsPage() {
           <CardTitle>AI Analysis</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className={`max-h-[27vw] ${result ? "overflow-y-auto" : ""}`}>
+          <div className={`md:max-h-[27vw] max-h-[58vh] ${result ? "overflow-y-auto" : ""}`}>
             {error && <p className="text-red-500 mb-4">{error}</p>}
             {result ? (
               <div className="flex flex-col gap-6">

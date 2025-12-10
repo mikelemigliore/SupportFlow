@@ -240,13 +240,13 @@ function WorkflowsPage() {
 
   return (
     <div>
-      <div className="w-full relative flex justify-start space-x-25 h-[92vh] items-center">
-        <div className="absolute top-4 left-4 ml-2">
+      <div className="w-full relative md:flex justify-start md:space-x-25 space-y-12 h-[92vh] items-center">
+        <div className="absolute ml-2 md:top-4 md:left-4 top-[-5.5vh] left-4">
           <Button size="sm" asChild>
             <Link href={"/pastComparisons"}>View Past Comparisons</Link>
           </Button>
         </div>
-        <Card className="w-[46.5vw] h-[72.5vh] ml-25">
+        <Card className="md:w-[46.5vw] md:h-[72.5vh] md:ml-25 w-full mt-15">
           <CardHeader>
             <CardTitle>Workflow Comparison</CardTitle>
             <CardDescription>
@@ -255,9 +255,9 @@ function WorkflowsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col gap-6">
-              <div className="flex space-x-5">
-                <div className="grid gap-2 w-[10vw]">
+            <div className="md:flex md:flex-col md:gap-6">
+              <div className="md:flex md:space-x-5 space-y-5">
+                <div className="grid gap-2 md:w-[10vw]">
                   <Label htmlFor="createdBy">Created By</Label>
                   <Input
                     value={name}
@@ -266,7 +266,7 @@ function WorkflowsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <div className="flex items-center">
+                  <div className="md:flex items-center">
                     <Label htmlFor="team">Team</Label>
                   </div>
                   <Select
@@ -276,7 +276,7 @@ function WorkflowsPage() {
                     }
                     value={workflowA.team}
                   >
-                    <SelectTrigger className="w-[10vw]">
+                    <SelectTrigger className="md:w-[10vw] w-full">
                       <SelectValue placeholder="Select a Team" />
                     </SelectTrigger>
                     <SelectContent>
@@ -307,7 +307,7 @@ function WorkflowsPage() {
                         }
                         value={workflowA.workflowType}
                       >
-                        <SelectTrigger className="w-[9vw]">
+                        <SelectTrigger className="md:w-[9vw] w-full">
                           <SelectValue placeholder="Workflow Types" />
                         </SelectTrigger>
                         <SelectContent>
@@ -331,7 +331,7 @@ function WorkflowsPage() {
                         }
                         value={workflowA.system}
                       >
-                        <SelectTrigger className="w-[9vw]">
+                        <SelectTrigger className="md:w-[9vw] w-full">
                           <SelectValue placeholder="System" />
                         </SelectTrigger>
                         <SelectContent>
@@ -352,9 +352,9 @@ function WorkflowsPage() {
                   </div>
                 </div>
               </div>
-              <div className="flex space-x-9 mt-6">
+              <div className="md:flex md:space-x-9 ">
                 <div className="space-y-6">
-                  <div className="grid gap-2 w-[20vw]">
+                  <div className="grid gap-2 md:w-[20vw] w-full mt-10 md:mt-0">
                     <Label htmlFor="title">Title</Label>
                     <Input
                       placeholder="Title"
@@ -369,7 +369,7 @@ function WorkflowsPage() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <div className="flex items-center">
+                    <div className="md:flex items-center">
                       <Label htmlFor="text">Workflow A</Label>
                     </div>
                     <Textarea
@@ -379,14 +379,14 @@ function WorkflowsPage() {
                           text: e.target.value,
                         }))
                       }
-                      className="w-[20vw] h-[30vh] resize-none"
+                      className="md:w-[20vw] w-full h-[30vh] resize-none"
                       placeholder="Enter workflow here..."
                     />
                   </div>
                 </div>
-                <div className="h-[41.5vh] w-px bg-gray-300"></div>
+                <div className="md:h-[41.5vh] md:w-px bg-gray-300 h-px w-full my-8 md:my-0"></div>
                 <div className="space-y-6">
-                  <div className="grid gap-2 w-[20vw]">
+                  <div className="grid gap-2 md:w-[20vw] w-full">
                     <Label htmlFor="title">Title</Label>
                     <Input
                       placeholder="Title"
@@ -411,7 +411,7 @@ function WorkflowsPage() {
                           text: e.target.value,
                         }))
                       }
-                      className="w-[20vw] h-[30vh] resize-none"
+                      className="md:w-[20vw] h-[30vh] resize-none"
                       placeholder="Enter workflow here..."
                     />
                   </div>
@@ -421,7 +421,7 @@ function WorkflowsPage() {
             <CardFooter>
               <div className="flex w-full justify-center pt-7">
                 <Button
-                className="w-[44vw]"
+                className="md:w-[44vw] w-full"
                   disabled={
                     !workflowA.title ||
                     !workflowB.title ||
@@ -438,7 +438,7 @@ function WorkflowsPage() {
             </CardFooter>
           </CardContent>
         </Card>
-        <div className="w-20 h-6 flex items-center justify-center">
+        <div className="md:w-20 h-6 flex items-center justify-center">
           {loading ? (
             <div className="flex space-x-12">
               <div className="loader"></div>
@@ -446,12 +446,12 @@ function WorkflowsPage() {
             </div>
           ) : null}
         </div>
-        <Card className="w-[26vw] h-[72.5vh]">
+        <Card className="md:w-[26vw] h-[72.5vh]">
           <CardHeader>
             <CardTitle>AI Analysis</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className={`max-h-[27vw] ${result ? "overflow-y-auto" : ""}`}>
+            <div className={`md:max-h-[27vw] max-h-[58vh] ${result ? "overflow-y-auto" : ""}`}>
               {error && <p className="text-red-500 mb-4">{error}</p>}
               {result ? (
                 <div className="flex flex-col gap-6">

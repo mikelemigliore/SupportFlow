@@ -106,8 +106,8 @@ function ComparisonDetailPage() {
 
   return (
     <div>
-      <div className="w-full relative flex justify-start space-x-25 h-[92vh] items-center">
-        <Card className="w-[46.5vw] h-[72.5vh] ml-25">
+      <div className="w-full relative md:flex md:justify-start md:space-x-25 space-y-12 h-[92vh] items-center">
+        <Card className="md:w-[46.5vw] md:h-[72.5vh] md:ml-25 mt-10">
           {deleted ? (
             ""
           ) : (
@@ -129,8 +129,8 @@ function ComparisonDetailPage() {
             ) : (
               <div>
                 <div className="flex flex-col gap-6">
-                  <div className="flex space-x-16">
-                    <div className="grid gap-2 w-[10vw]">
+                  <div className="md:flex md:space-x-16 space-y-6">
+                    <div className="grid gap-2 md:w-[10vw]">
                       <Label htmlFor="date">Date</Label>
                       <p>{workflow?.date}</p>
                     </div>
@@ -165,9 +165,9 @@ function ComparisonDetailPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex space-x-9 mt-6">
+                  <div className="md:flex space-x-9 mt-6">
                     <div className="space-y-6">
-                      <div className="grid gap-2 w-[20vw]">
+                      <div className="grid gap-2 md:w-[20vw] w-full">
                         <Label htmlFor="titleA">Title for A</Label>
                         {workflow?.workflowA[0].title}
                       </div>
@@ -178,9 +178,9 @@ function ComparisonDetailPage() {
                         {workflow?.workflowA[0].text}
                       </div>
                     </div>
-                    <div className="h-[41.5vh] w-px bg-gray-300"></div>
+                    <div className="md:h-[41.5vh] md:w-px bg-gray-300 h-px w-full my-8 md:my-0"></div>
                     <div className="space-y-6">
-                      <div className="grid gap-2 w-[20vw]">
+                      <div className="grid gap-2 md:w-[20vw] w-full">
                         <Label htmlFor="titleA">Title for B</Label>
                         {workflow?.workflowB[0].title}
                       </div>
@@ -197,7 +197,7 @@ function ComparisonDetailPage() {
             )}
           </CardContent>
         </Card>
-        <Card className=" relative w-[26vw] h-[72.5vh]">
+        <Card className="relative md:w-[26vw] md:h-[73.5vh] md:mt-10">
           <CardHeader>
             <CardTitle>AI Analysis</CardTitle>
           </CardHeader>
@@ -209,7 +209,7 @@ function ComparisonDetailPage() {
             ) : (
               <div>
                 <div
-                  className={`max-h-[27vw] ${
+                  className={`md:max-h-[27vw] max-h-[58vh] ${
                     workflow ? "overflow-y-auto" : ""
                   }`}
                 >
@@ -243,7 +243,7 @@ function ComparisonDetailPage() {
                   </div>
                 </div>
 
-                <div className="flex-col gap-2 pt-5">
+                <div className="hidden md:block flex-col gap-2 pt-5">
                   <Button
                     className="cursor-pointer w-full"
                     onClick={handleDeleteWorkflow}
@@ -255,6 +255,14 @@ function ComparisonDetailPage() {
             )}
           </CardContent>
         </Card>
+        <div className="md:hidden p-3 w-full">
+          <Button
+            className="cursor-pointer w-full"
+            onClick={handleDeleteWorkflow}
+          >
+            Delete Comparison
+          </Button>
+        </div>
       </div>
     </div>
   );

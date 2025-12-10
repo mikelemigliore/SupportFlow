@@ -196,14 +196,14 @@ function InsightsPage() {
   };
 
   return (
-    <div className="w-full relative flex justify-center space-x-25 h-[90vh] items-center">
-      <div className="absolute top-4 left-4">
+    <div className="w-full relative md:flex justify-center md:space-x-25 space-y-12 h-[90vh] items-center">
+      <div className="absolute md:top-4 md:left-4 top-[-5.5vh] left-4">
         <Button size="sm" asChild>
           <Link href="/pastInsights">View Past Insights</Link>
         </Button>
       </div>
       <div>
-        <Card className="w-[50vw] h-[52vh]">
+        <Card className="md:w-[50vw] md:h-[52vh] mt-15">
           <CardHeader>
             <CardTitle>New AI Insight Analisys</CardTitle>
             <CardDescription>
@@ -216,13 +216,13 @@ function InsightsPage() {
               <div className="grid gap-2">
                 <Label htmlFor="createdBy">Created By</Label>
                 <Input
-                  className="w-[10vw] flex"
+                  className="md:w-[10vw] flex"
                   value={nameCheckbox}
                   onChange={(e) => setNameCheckbox(e.target.value)}
                   placeholder="Your Name"
                 />
               </div>
-              <div className="grid gap-2 h-[24vh]">
+              <div className="grid gap-2 md:h-[24vh]">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -282,7 +282,7 @@ function InsightsPage() {
           <div className="h-px bg-gray-300 flex-1"></div>
         </div>
         <div className="">
-          <Card className="w-[50vw] h-[19vh] mb-[-4vh]">
+          <Card className="md:w-[50vw] md:h-[19vh] md:mb-[-4vh]">
             <CardHeader>
               <CardTitle>New AI Insight Analisys</CardTitle>
               <CardDescription>
@@ -291,11 +291,11 @@ function InsightsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex space-x-6">
+              <div className="md:flex md:space-x-6 space-y-6">
                 <div className="grid gap-2">
                   <Label htmlFor="createdBy">Created By</Label>
                   <Input
-                    className="w-[10vw] flex"
+                    className="md:w-[10vw] md:flex w-full"
                     value={nameSpecific}
                     onChange={(e) => setNameSpecific(e.target.value)}
                     placeholder="Your Name"
@@ -304,7 +304,7 @@ function InsightsPage() {
                 <div className="">
                   <div className="grid gap-2">
                     <Label htmlFor="createdBy">Specifics</Label>
-                    <div className="space-x-3 flex">
+                    <div className="md:space-x-3 space-y-3 md:flex">
                       <Select
                         onValueChange={(value) =>
                           setSpecificTickets({
@@ -313,7 +313,7 @@ function InsightsPage() {
                           })
                         }
                       >
-                        <SelectTrigger className="w-[9vw]">
+                        <SelectTrigger className="md:w-[9vw] w-full">
                           <SelectValue placeholder="Priority" />
                         </SelectTrigger>
                         <SelectContent>
@@ -333,7 +333,7 @@ function InsightsPage() {
                           })
                         }
                       >
-                        <SelectTrigger className="w-[9vw]">
+                        <SelectTrigger className="md:w-[9vw] w-full">
                           <SelectValue placeholder="Source" />
                         </SelectTrigger>
                         <SelectContent>
@@ -353,11 +353,11 @@ function InsightsPage() {
                             quantity: e.target.value,
                           })
                         }
-                        className="w-[8vw]"
+                        className="md:w-[8vw] w-full"
                         placeholder="Quantity"
                       />
                       <Button
-                        className="cursor-pointer "
+                        className="cursor-pointer w-full md:w-[8.5vw]"
                         onClick={handleSpecificList}
                         disabled={
                           specificTickets.priority === "" ||
@@ -375,7 +375,7 @@ function InsightsPage() {
           </Card>
         </div>
       </div>
-      <div className="w-20 h-6 flex items-center justify-center">
+      <div className="md:w-20 h-6 flex items-center justify-center">
         {loading ? (
           <div className="flex space-x-12">
             <div className="loader"></div>
@@ -385,12 +385,12 @@ function InsightsPage() {
       </div>
 
       <div>
-        <Card className="w-full max-w-lg h-[74vh] mb-[-4vh]">
+        <Card className="w-full max-w-lg h-[75vh] md:mb-[-5vh]">
           <CardHeader>
             <CardTitle>AI Analysis</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className={`max-h-[27vw] ${result ? "overflow-y-auto" : ""}`}>
+            <div className={`md:max-h-[27vw] max-h-[58vh] ${result ? "overflow-y-auto" : ""}`}>
               {error && <p className="text-red-500 mb-4">{error}</p>}
               {result ? (
                 <div className="flex flex-col gap-6">
@@ -434,7 +434,7 @@ function InsightsPage() {
               ) : (
                 <div className="w-full h-[63vh] bg-gray-100 rounded-xl">
                   {loading ? (
-                    <div className="flex w-[25vw] items-center justify-center h-full">
+                    <div className="flex md:w-[25vw] w-full items-center justify-center h-full">
                       <Spinner className="size-25" />
                     </div>
                   ) : (
@@ -456,7 +456,7 @@ function InsightsPage() {
                 </div>
               )}
             </div>
-            <div className="flex-col gap-2 pt-5">
+            <div className="flex-col gap-2 md:pt-9 pt-5">
               {result && (
                 <Button className="cursor-pointer w-full" onClick={handleSave}>
                   Save

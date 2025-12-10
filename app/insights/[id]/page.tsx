@@ -67,9 +67,9 @@ function InsightDetailPage() {
     if (deleted) {
       const timer = setTimeout(() => {
         router.push("/pastInsights");
-      }, 2000); 
+      }, 2000);
 
-      return () => clearTimeout(timer); 
+      return () => clearTimeout(timer);
     }
     setDeleted(false);
   }, [deleted]);
@@ -85,7 +85,6 @@ function InsightDetailPage() {
       });
       setDeleted(true);
       toast("Insight Deleted Successfully");
-
     } catch (err: any) {
       console.error(err?.message || "Failed to save insight.");
     }
@@ -93,7 +92,7 @@ function InsightDetailPage() {
 
   return (
     <div className="flex justify-center items-center py-20">
-      <Card className=" relative w-[60vw] h-[52vh] overflow-y-auto">
+      <Card className=" relative md:w-[60vw] md:h-[52vh] overflow-y-auto">
         {deleted ? (
           ""
         ) : (
@@ -142,7 +141,7 @@ function InsightDetailPage() {
                 </Label>
                 <p>{insight?.suggestedFaqs}</p>
               </div>
-              <div className="absolute top-7 right-10">
+              <div className="hidden md:block absolute top-7 right-10">
                 <Button
                   className="cursor-pointer w-[7vw]"
                   onClick={handleDeleteTicket}
@@ -154,6 +153,11 @@ function InsightDetailPage() {
           )}
         </CardContent>
       </Card>
+      <div className="md:hidden absolute bottom-[-12vh] w-full p-3">
+        <Button className="cursor-pointer md:w-[7vw] w-full" onClick={handleDeleteTicket}>
+          Delete Ticket
+        </Button>
+      </div>
     </div>
   );
 }

@@ -139,7 +139,7 @@ function PastComparisonsPage() {
           value={sortMode}
           onValueChange={(v) => setSortMode(v as SortMode)}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="md:w-[180px] w-full">
             <SelectValue placeholder="Sort" />
           </SelectTrigger>
           <SelectContent>
@@ -154,7 +154,7 @@ function PastComparisonsPage() {
           value={teamFilter}
           onValueChange={(v) => setTeamFilter(v as TeamFilter)}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="md:w-[180px] w-full">
             <SelectValue placeholder="Source" />
           </SelectTrigger>
           <SelectContent>
@@ -184,12 +184,12 @@ function PastComparisonsPage() {
             </Empty>
           </div>
         ) : (
-          <div className="space-y-8 p-10 space-x-5 grid grid-cols-3">
+          <div className="space-y-8 p-10 space-x-5 md:grid md:grid-cols-3">
             {workflow.map((result) => (
-              <Card className="relative w-[30vw] h-[29vh] py-0 gap-3">
+              <Card className="md:relative md:w-[30vw] md:h-[29vh] py-0 gap-3">
                 <CardHeader></CardHeader>
                 <CardAction className=""></CardAction>
-                <CardContent className="space-y-3 grid grid-cols-2">
+                <CardContent className="md:space-y-3 space-y-4 md:grid md:grid-cols-2 md:pb-0 pb-3">
                   <div className=" gap-2">
                     <Label htmlFor="date">
                       <b>Date</b>
@@ -214,7 +214,7 @@ function PastComparisonsPage() {
                     </Label>
                     <p>{result.workflowB[0]?.title}</p>
                   </div>
-                  <div className="w-[12vw] gap-2">
+                  <div className="hidden md:block w-[12vw] gap-2">
                     <Label htmlFor="summary">
                       <b>Summary</b>
                     </Label>
@@ -224,8 +224,8 @@ function PastComparisonsPage() {
                         : result.summary}
                     </p>
                   </div>
-                  <div className="absolute bottom-4 right-10">
-                    <Button asChild className="cursor-pointer w-[7vw]">
+                  <div className="md:absolute md:bottom-4 md:right-10">
+                    <Button asChild className="cursor-pointer md:w-[7vw] w-full">
                       <Link href={`workflows/${result.id}`}>View</Link>
                     </Button>
                   </div>

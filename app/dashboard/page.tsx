@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -8,7 +7,7 @@ import { SectionCards } from "@/components/sectionCard";
 import { ChartAreaInteractive } from "@/components/chart-area-interactive";
 import { DataTable } from "@/components/data-table";
 
-type Ticket = { createdAt: string  };
+type Ticket = { createdAt: string };
 type Workflow = { createdAt: string };
 type Insight = { createdAt: string };
 
@@ -17,8 +16,6 @@ type ActivityData = {
   workflows: Workflow[];
   insights: Insight[];
 };
-
-
 
 type ChartData = {
   date: string;
@@ -70,7 +67,6 @@ function DashboardPage() {
 
         const limited = sorted.slice(0, 20);
 
-
         setCollective(limited);
 
         setActivity({
@@ -99,7 +95,7 @@ function DashboardPage() {
   }, [activity]);
 
   function normalizeTimestampToDay(timestamp: string) {
-    return new Date(timestamp).toISOString().split("T")[0]; 
+    return new Date(timestamp).toISOString().split("T")[0];
   }
 
   function buildChartData(activity: ActivityData) {
@@ -140,7 +136,7 @@ function DashboardPage() {
 
   return (
     <div>
-      <div className="@container/main flex flex-1 flex-col gap-2 ml-64">
+      <div className="@container/main flex flex-1 flex-col gap-2 md:ml-64">
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
           <SectionCards
             lenghtTickets={Tickets.length}
@@ -154,7 +150,7 @@ function DashboardPage() {
               setTimeRange={setTimeRange}
             />
           </div>
-          <div className="px-4 lg:px-6">
+          <div className="px-4 md:px-6">
             <h1 className="font-semibold p-2">History</h1>
             <DataTable
               columns={[
@@ -169,7 +165,9 @@ function DashboardPage() {
           </div>
         </div>
       </div>
-      <SideBar />
+      <div className="hidden md:block">
+        <SideBar />
+      </div>
     </div>
   );
 }

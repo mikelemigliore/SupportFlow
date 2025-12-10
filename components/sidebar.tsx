@@ -20,6 +20,10 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarInset,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavUser } from "@/components/NavUser";
@@ -46,39 +50,42 @@ function SideBar() {
     }
   };
 
-  if (isLoading)
-    return (
-      <div className="flex items-center justify-center my-[30vh]">
-        <Spinner className="size-25" />
-      </div>
-    );
+  // if (isLoading)
+  //   return (
+  //     <div className="flex items-center justify-center my-[30vh]">
+  //       <Spinner className="size-25" />
+  //     </div>
+  //   );
 
   return (
-    <div>
+    <div className="">
       <SidebarProvider>
+        <SidebarInset className="">
+          <div className="">
+            <SidebarTrigger className="space-x-3"></SidebarTrigger>
+          </div>
+        </SidebarInset>
         <Sidebar collapsible="offcanvas">
-          <SidebarHeader className="p-0">
-            <SidebarMenu>
-              <SidebarMenuItem className="border-b ">
-                <SidebarMenuButton asChild>
-                  <a href="/dashboard" className="my-3">
-                    <Avatar>
-                      <AvatarImage
-                        src="/SupportflowLogo.svg"
-                        alt="@shadcn"
-                      />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <span className="text-base font-semibold">
-                      AI/SupportFlow360
-                    </span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <div className="space-y-6 p-2">
-                <div>
-                  <SidebarGroupLabel>Create New</SidebarGroupLabel>
-                  <SidebarMenuItem>
+          <SidebarContent>
+            <SidebarHeader className="">
+              <a
+                href="/dashboard"
+                className="pb-3 mt-1 flex items-center border-b"
+              >
+                <Avatar className="">
+                  <AvatarImage src="/SupportflowLogo.svg" alt="@shadcn" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <span className="text-base font-semibold pl-4">
+                  AI/SupportFlow360
+                </span>
+              </a>
+            </SidebarHeader>
+            <SidebarGroup>
+              <SidebarGroupLabel>Create New</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem className="">
                     <SidebarMenuButton
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
@@ -89,7 +96,7 @@ function SideBar() {
                       </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  <SidebarMenuItem>
+                  <SidebarMenuItem className="">
                     <SidebarMenuButton
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
@@ -100,7 +107,7 @@ function SideBar() {
                       </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  <SidebarMenuItem>
+                  <SidebarMenuItem className="">
                     <SidebarMenuButton
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
@@ -111,10 +118,14 @@ function SideBar() {
                       </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                </div>
-                <div>
-                  <SidebarGroupLabel>View Past</SidebarGroupLabel>
-                  <SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+            <SidebarGroup>
+              <SidebarGroupLabel>View Past</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem className="">
                     <SidebarMenuButton
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
@@ -125,7 +136,7 @@ function SideBar() {
                       </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  <SidebarMenuItem>
+                  <SidebarMenuItem className="">
                     <SidebarMenuButton
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
@@ -136,7 +147,7 @@ function SideBar() {
                       </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  <SidebarMenuItem>
+                  <SidebarMenuItem className="">
                     <SidebarMenuButton
                       asChild
                       className="data-[slot=sidebar-menu-button]:!p-1.5"
@@ -147,12 +158,12 @@ function SideBar() {
                       </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                </div>
-              </div>
-            </SidebarMenu>
-          </SidebarHeader>
-          <SidebarContent></SidebarContent>
-          <SidebarFooter>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+          {/* <SidebarFooter className="absolute md:bottom-0 bottom-77 w-full"> */}
+          <SidebarFooter className="">
             <NavUser userName={user?.name} userEmail={user?.email} />
             <Button
               className="cursor-pointer"
@@ -169,3 +180,4 @@ function SideBar() {
 }
 
 export default SideBar;
+

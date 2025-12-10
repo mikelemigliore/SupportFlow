@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { ROUTE_CRUMBS, normalizePath, Crumb } from "./breadcrumbConfig";
 import { IconCirclePlusFilled } from "@tabler/icons-react";
+import SideBar from "./sidebar";
 
 function NavBar() {
   const pathname = usePathname();
@@ -26,6 +26,9 @@ function NavBar() {
     <header className="flex w-full items-center justify-between px-6 py-3 border-b">
       <Breadcrumb>
         <BreadcrumbList>
+          <div className="md:hidden">
+            <SideBar />
+          </div>
           {crumbs.map((crumb, i) => {
             const isLast = i === crumbs.length - 1;
 
@@ -47,7 +50,7 @@ function NavBar() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="space-x-4">
+      <div className="hidden md:block space-x-4 flex">
         <Button size="sm">
           <IconCirclePlusFilled />
           <Link href="/tickets">Quick Ticket</Link>

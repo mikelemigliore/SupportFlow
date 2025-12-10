@@ -24,6 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useState, useEffect } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,6 +42,7 @@ export function DataTable<TData, TValue>({
     []
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   const table = useReactTable({
     data,
@@ -68,6 +70,17 @@ export function DataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
+
+  useEffect(() => {
+    const checkSize = () => {
+      setIsMobile(window.innerWidth < 768); 
+    };
+
+    checkSize(); 
+    window.addEventListener("resize", checkSize);
+
+    return () => window.removeEventListener("resize", checkSize);
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">
@@ -110,10 +123,16 @@ export function DataTable<TData, TValue>({
 
                     return (
                       <TableCell key={cell.id}>
-                        {isSummary ? (
+                        {isSummary && !isMobile ? (
                           <span className="block max-w-[400px]">
                             {text.length > 90
                               ? text.slice(0, 90) + "..."
+                              : text}
+                          </span>
+                        ) : isSummary && isMobile ? (
+                          <span className="block max-w-[200px]">
+                            {text.length > 30
+                              ? text.slice(0, 30) + "..."
                               : text}
                           </span>
                         ) : (

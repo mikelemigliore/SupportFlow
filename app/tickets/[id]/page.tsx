@@ -106,8 +106,8 @@ function TicketDetailPage() {
   };
 
   return (
-    <div className="flex justify-center items-center py-20">
-      <Card className=" relative w-[60vw] h-[62vh] overflow-y-auto">
+    <div className="flex justify-center items-center md:py-20 py-10">
+      <Card className="relative md:w-[60vw] md:h-[64vh] overflow-y-auto">
         {deleted ? (
           ""
         ) : (
@@ -174,7 +174,7 @@ function TicketDetailPage() {
                 </Label>
                 <p>{ticket.automationIdea}</p>
               </div>
-              <div className="absolute top-7 right-10">
+              <div className="hidden md:block absolute top-7 right-10">
                 <Button
                   className="cursor-pointer w-[7vw]"
                   onClick={handleDeleteTicket}
@@ -186,6 +186,14 @@ function TicketDetailPage() {
           )}
         </CardContent>
       </Card>
+      <div className="md:hidden absolute bottom-[-17vh] w-full p-3">
+        <Button
+          className="cursor-pointer w-full"
+          onClick={handleDeleteTicket}
+        >
+          Delete Ticket
+        </Button>
+      </div>
     </div>
   );
 }
