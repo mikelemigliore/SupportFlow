@@ -1,18 +1,18 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { generateSessionToken } from "@/lib/auth";
 
-const GUEST_EMAIL = "guest@cinepiks.com";
+const DEFAULT_GUEST_EMAIL = "guest@cinepiks.com";
 
 export async function POST(req: NextRequest) {
   try {
     // 1. Find the hardcoded guest user
     const user = await db.user.findUnique({
-      where: { email: GUEST_EMAIL },
+      where: { email: process.env.GUEST_EMAIL ?? DEFAULT_GUEST_EMAIL },
     });
 
     if (!user) {
+      console.log("user Error", user);
       return NextResponse.json(
         { error: "Guest user not found" },
         { status: 500 }
