@@ -153,8 +153,8 @@ function InsightDetailPage() {
           )}
         </CardContent>
       </Card>
-      <div className="md:hidden absolute bottom-[-12vh] w-full p-3">
-        <Button className="cursor-pointer md:w-[7vw] w-full" onClick={handleDeleteTicket}>
+      <div className="md:hidden absolute bottom-[-17vh] w-full p-3">
+        <Button className="cursor-pointer w-full" onClick={handleDeleteTicket}>
           Delete Ticket
         </Button>
       </div>
