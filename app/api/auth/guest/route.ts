@@ -6,24 +6,27 @@ const DEFAULT_GUEST_EMAIL = "guest@cinepiks.com";
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Find the hardcoded guest user
-    const user = await db.user.findUnique({
-      where: { email: process.env.GUEST_EMAIL ?? DEFAULT_GUEST_EMAIL },
+    const guestEmail = process.env.GUEST_EMAIL ?? DEFAULT_GUEST_EMAIL;
+    console.log("[GUEST] guestEmail env value:", guestEmail);
+
+    // Make sure guest user exists in the DB this app is actually using
+    const user = await db.user.upsert({
+      where: { email: guestEmail },
+      create: {
+        id: "guest-user", 
+        email: guestEmail,
+        name: "Guest User",
+        password: "guest-placeholder-password-do-not-use",
+      },
+      update: {},
     });
 
-    if (!user) {
-      console.log("user Error", user);
-      return NextResponse.json(
-        { error: "Guest user not found" },
-        { status: 500 }
-      );
-    }
+    console.log("[GUEST] user from DB:", user);
 
-    // 2. Create a session
     const sessionToken = generateSessionToken();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
-    await db.session.create({
+    const session = await db.session.create({
       data: {
         userId: user.id,
         token: sessionToken,
@@ -31,7 +34,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 3. Set cookie
+    console.log("[GUEST] session created:", session);
+
     const res = NextResponse.json(
       {
         message: "Guest sign in successful",
@@ -52,10 +56,10 @@ export async function POST(req: NextRequest) {
     });
 
     return res;
-  } catch (err) {
-    console.error("Guest signin error:", err);
+  } catch (err: any) {
+    console.error("[GUEST] signin error:", err);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", detail: String(err?.message ?? err) },
       { status: 500 }
     );
   }
