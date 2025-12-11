@@ -27,8 +27,6 @@ import {
 import { IconFolderCode } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 
-
-
 type SortMode = "date_desc" | "date_asc" | "priority_desc" | "priority_asc";
 
 function PastInsightsPage() {
@@ -111,9 +109,9 @@ function PastInsightsPage() {
         ) : (
           <div className="space-y-8 p-10 md:space-x-5 md:grid md:grid-cols-3">
             {insights.map((result) => (
-              <Card className="relative md:w-[30vw] md:h-[29vh] md:py-0 gap-3">
+              <Card className="md:relative md:w-[30vw] md:h-[29vh] py-5 gap-3">
                 <CardAction className=""></CardAction>
-                <CardContent className="md:space-y-3 space-y-5 md:grid md:grid-cols-2">
+                <CardContent className="md:space-y-6 space-y-4 md:grid md:grid-cols-2 md:pb-0 pb-3">
                   <div className=" gap-2">
                     <Label htmlFor="date">
                       <b>Date</b>
@@ -136,8 +134,11 @@ function PastInsightsPage() {
                         : result.summary}
                     </p>
                   </div>
-                  <div className="md:absolute md:bottom-4 md:right-10 w-full">
-                    <Button asChild className="cursor-pointer md:w-[7vw] w-full">
+                  <div className="md:absolute md:bottom-4 md:right-10">
+                    <Button
+                      asChild
+                      className="cursor-pointer md:w-[7vw] w-full"
+                    >
                       <Link href={`insights/${result.id}`}>View</Link>
                     </Button>
                   </div>
