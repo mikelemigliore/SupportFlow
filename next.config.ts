@@ -32,6 +32,9 @@ const nextConfig = {
     // GitHub
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID ?? "",
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET ?? "",
+
+    //OpenAI
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "",
   },
 
   // Don’t try to bundle Prisma; load it from node_modules at runtime
